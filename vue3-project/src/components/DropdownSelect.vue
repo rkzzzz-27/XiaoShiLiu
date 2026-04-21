@@ -161,7 +161,7 @@ onUnmounted(() => {
 <style scoped>
 .dropdown-selector {
   position: relative;
-  width: fit-content;
+  width: 100%;
   user-select: none;
 }
 
@@ -225,16 +225,17 @@ onUnmounted(() => {
   position: absolute;
   top: 100%;
   left: 0;
-  right: 0;
   background: var(--bg-color-primary);
   border: 1px solid var(--border-color-primary);
   border-top: none;
   border-radius: 0 0 8px 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  z-index: 10000;
   max-height: 200px;
   overflow-y: auto;
   padding: 8px;
+  min-width: 100%;
+  width: 100%;
 }
 
 .dropdown-option {

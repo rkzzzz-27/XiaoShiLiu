@@ -108,7 +108,7 @@
         <div class="category-section">
           <div class="section-title">分类</div>
           <DropdownSelect v-model="form.category_id" :options="categories" placeholder="请选择分类" label-key="name"
-            value-key="id" max-width="300px" min-width="200px" @change="handleCategoryChange" />
+            value-key="id" max-width="100%" min-width="100%" @change="handleCategoryChange" />
         </div>
 
         <div class="tag-section">
@@ -122,7 +122,8 @@
           {{ isSavingDraft ? '保存中...' : '存草稿' }}
         </button>
         <button class="publish-btn" :disabled="!canPublish || isPublishing" @click="handlePublish">
-          {{ isPublishing ? '发布中...' : '发布' }}
+          <SvgIcon v-if="!isPublishing" name="send" width="18" height="18" />
+          <span>{{ isPublishing ? '发布中...' : '发布' }}</span>
         </button>
       </div>
     </div>
@@ -1020,7 +1021,7 @@ const handleSaveDraft = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .publish-btn:hover:not(:disabled) {

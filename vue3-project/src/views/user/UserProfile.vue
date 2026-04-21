@@ -140,6 +140,11 @@ function goTop() {
   navigationStore.scrollToTop('smooth')
 }
 
+// 跳转到私聊页面
+const goToChat = () => {
+  router.push(`/chat/${userId.value}`)
+}
+
 // 获取用户信息
 const getUserInfo = async () => {
   loading.value = true
@@ -269,8 +274,12 @@ onMounted(async () => {
           </div>
         </div>
 
-        <div class="follow-button-wrapper" v-if="!isCurrentUser">
+        <div class="action-buttons-wrapper" v-if="!isCurrentUser">
           <FollowButton :user-id="userInfo.user_id" :is-following="followStatus" />
+          <button class="chat-btn" @click="goToChat">
+            <SvgIcon name="chat" width="16" height="16" />
+            <span>聊一聊</span>
+          </button>
         </div>
       </div>
       <div class="user-desc">
@@ -544,12 +553,53 @@ onMounted(async () => {
   text-align: center;
 }
 
-/* ---------- 3.5. 关注按钮样式 ---------- */
-.follow-button-wrapper {
+/* ---------- 3.5. 操作按钮样式 ---------- */
+.action-buttons-wrapper {
   position: absolute;
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.chat-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 96px;
+  height: 40px;
+  justify-content: center;
+}
+
+.chat-btn:hover {
+  background: var(--primary-color-dark);
+}
+
+/* 小屏幕下调整按钮布局 */
+@media (max-width: 480px) {
+  .action-buttons-wrapper {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .chat-btn {
+    width: 88px;
+    height: 36px;
+    font-size: 13px;
+    padding: 6px 12px;
+  }
 }
 
 /* ---------- 3.6. 加载和错误状态样式 ---------- */

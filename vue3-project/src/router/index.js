@@ -12,6 +12,7 @@ import SearchResult from '@/views/search/SearchResult.vue'
 import PostManagementPage from '@/views/post-management/index.vue'
 import DraftBoxPage from '@/views/draft-box/index.vue'
 import NotFound from '@/views/NotFound.vue'
+import ChatPage from '@/views/chat/ChatPage.vue'
 import { getValidChannelPaths } from '@/config/channels'
 
 // 后台管理系统组件
@@ -154,6 +155,11 @@ const router = createRouter({
           path: 'draft-box',
           name: 'draft_box',
           component: DraftBoxPage
+        },
+        {
+          path: 'chat/:userId',
+          name: 'chat',
+          component: ChatPage
         },
         // 404页面 - 捕获所有未匹配的路由
         {

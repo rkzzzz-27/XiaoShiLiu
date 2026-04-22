@@ -163,7 +163,7 @@ router.get('/', optionalAuth, async (req, res) => {
         FROM (
           SELECT 
             p.*,
-            ((p.like_count + p.collect_count + p.view_count * 0.7) * 0.7 + (24 - LEAST(TIMESTAMPDIFF(HOUR, p.created_at, NOW()), 24)) * 0.3) as score
+            ((p.like_count*0.5 + p.collect_count*0.2 + p.view_count * 0.3) * 0.7 + (24 - LEAST(TIMESTAMPDIFF(HOUR, p.created_at, NOW()), 24)) * 0.3) as score
           FROM posts p 
           WHERE ${innerWhere}
           ORDER BY score DESC

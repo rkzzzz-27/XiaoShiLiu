@@ -198,3 +198,344 @@ Token验证失败: Error: Invalid token
 获取用户统计信息 - 用户ID: rkzzzz0727
 获取用户统计信息 - 用户ID: rkzzzz0727
 获取笔记评论列表 - 笔记ID: 2, 页码: 1, 每页: 5, 排序: desc, 当前用户ID: 1
+----- 2026-04-22 17:04:46 - npm start -----
+[dotenv@17.2.2] injecting env (40) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+● 自动解封功能已启用，每 1 分钟检查一次
+● 服务器运行在端口 3001
+● 环境: production
+----- 2026-04-22 17:34:09 - npm start -----
+[dotenv@17.2.2] injecting env (40) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+● 自动解封功能已启用，每 1 分钟检查一次
+● 服务器运行在端口 3001
+● 环境: production
+用户登录失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:633:35
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count, is_active, gender, zodiac_sign, mbti, education, major, interests FROM users WHERE user_id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+用户登录失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:633:35
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count, is_active, gender, zodiac_sign, mbti, education, major, interests FROM users WHERE user_id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+用户登录失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:633:35
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count, is_active, gender, zodiac_sign, mbti, education, major, interests FROM users WHERE user_id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+Token验证失败: Error: Invalid token
+    at verifyToken (/root/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/root/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+Token验证失败: Error: Invalid token
+    at verifyToken (/root/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/root/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+Token验证失败: Error: Invalid token
+    at verifyToken (/root/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/root/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+用户登录失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:633:35
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count, is_active, gender, zodiac_sign, mbti, education, major, interests FROM users WHERE user_id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+用户登录失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:633:35
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count, is_active, gender, zodiac_sign, mbti, education, major, interests FROM users WHERE user_id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+获取笔记评论列表 - 笔记ID: 20, 页码: 1, 每页: 5, 排序: desc, 当前用户ID: null
+获取笔记评论列表 - 笔记ID: 20, 页码: 1, 每页: 5, 排序: desc, 当前用户ID: null
+获取笔记评论列表 - 笔记ID: 20, 页码: 1, 每页: 5, 排序: desc, 当前用户ID: null
+----- 2026-04-22 17:48:57 - npm start -----
+[dotenv@17.2.2] injecting env (40) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+● 自动解封功能已启用，每 1 分钟检查一次
+● 服务器运行在端口 3001
+● 环境: production
+Token验证失败: Error: Invalid token
+    at verifyToken (/root/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/root/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+Token验证失败: Error: Invalid token
+    at verifyToken (/root/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/root/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+用户登录失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:633:35
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count, is_active, gender, zodiac_sign, mbti, education, major, interests FROM users WHERE user_id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+----- 2026-04-22 17:52:15 - npm start -----
+[dotenv@17.2.2] injecting env (40) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+● 自动解封功能已启用，每 1 分钟检查一次
+● 服务器运行在端口 3001
+● 环境: production
+用户登录失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:633:35
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count, is_active, gender, zodiac_sign, mbti, education, major, interests FROM users WHERE user_id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+用户登录失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:633:35
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count, is_active, gender, zodiac_sign, mbti, education, major, interests FROM users WHERE user_id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+用户注册失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:599:35
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count FROM users WHERE id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+----- 2026-04-22 18:27:18 - npm start -----
+[dotenv@17.2.2] injecting env (40) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+● 自动解封功能已启用，每 1 分钟检查一次
+● 服务器运行在端口 3001
+● 环境: production
+用户登录失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:633:35
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count, is_active, gender, zodiac_sign, mbti, education, major, interests FROM users WHERE user_id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+Token验证失败: Error: Invalid token
+    at verifyToken (/root/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/root/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+Token验证失败: Error: Invalid token
+    at verifyToken (/root/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/root/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+获取用户统计信息 - 用户ID: 5201314
+Token验证失败: Error: Invalid token
+    at verifyToken (/root/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/root/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+用户登录失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:633:35
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count, is_active, gender, zodiac_sign, mbti, education, major, interests FROM users WHERE user_id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+用户登录失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:633:35
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count, is_active, gender, zodiac_sign, mbti, education, major, interests FROM users WHERE user_id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+用户登录失败: Error: Unknown column 'follow_list_public' in 'field list'
+    at PromisePool.execute (/root/XiaoShiLiu/express-project/node_modules/mysql2/lib/promise/pool.js:54:22)
+    at /root/XiaoShiLiu/express-project/routes/auth.js:633:35
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at Function.process_params (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at Function.handle (/root/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3) {
+  code: 'ER_BAD_FIELD_ERROR',
+  errno: 1054,
+  sql: 'SELECT id, user_id, nickname, avatar, bio, location, follow_count, fans_count, follow_list_public, like_count, is_active, gender, zodiac_sign, mbti, education, major, interests FROM users WHERE user_id = ?',
+  sqlState: '42S22',
+  sqlMessage: "Unknown column 'follow_list_public' in 'field list'"
+}
+----- 2026-04-22 18:30:56 - npm start -----
+[dotenv@17.2.2] injecting env (40) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+● 自动解封功能已启用，每 1 分钟检查一次
+● 服务器运行在端口 3001
+● 环境: production
+----- 2026-04-22 18:55:08 - npm start -----
+[dotenv@17.2.2] injecting env (40) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+● 自动解封功能已启用，每 1 分钟检查一次
+● 服务器运行在端口 3001
+● 环境: production

@@ -5,7 +5,7 @@
     "author": "@ZTMYO",
     "main": "app.js",
     "scripts": {
-        "start": "node app.js",
+        "start": "sh ./scripts/start-with-logs.sh",
         "dev": "nodemon app.js",
         "generate-data": "node scripts/generate-data.js",
         "init-db": "node scripts/init-database.js"

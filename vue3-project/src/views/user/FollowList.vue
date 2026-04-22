@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useScroll, useWindowSize } from '@vueuse/core'
 import { useNavigationStore } from '@/stores/navigation'
@@ -7,6 +7,7 @@ import { useUserStore } from '@/stores/user'
 import UserList from '@/views/search/components/UserList.vue'
 import { userApi } from '@/api/index.js'
 import BackToTopButton from '@/components/BackToTopButton.vue'
+import messageManager from '@/utils/messageManager'
 
 const route = useRoute()
 const router = useRouter()
@@ -37,6 +38,8 @@ const userLists = ref({
   followers: []
 })
 const loading = ref(false)
+const listOwnerId = computed(() => String(route.query.userId || userStore.userInfo?.user_id || ''))
+const accessMessage = ref('')
 
 const sliderStyle = computed(() => {
   const index = tabs.value.findIndex(tab => tab.name === activeTab.value)
@@ -72,11 +75,9 @@ const fixedSliderStyle = computed(() => {
 
 async function loadUserList(type) {
   loading.value = true
+  accessMessage.value = ''
   try {
-    const currentUserId = userStore.userInfo?.user_id
-
-    if (!currentUserId) {
-      console.error('用户未登录，无法加载关注列表')
+    if (!listOwnerId.value) {
       userLists.value[type] = []
       return
     }
@@ -84,13 +85,13 @@ async function loadUserList(type) {
     let response
     switch (type) {
       case 'mutual':
-        response = await userApi.getMutualFollows(currentUserId)
+        response = await userApi.getMutualFollows(listOwnerId.value)
         break
       case 'following':
-        response = await userApi.getFollowing(currentUserId)
+        response = await userApi.getFollowing(listOwnerId.value)
         break
       case 'followers':
-        response = await userApi.getFollowers(currentUserId)
+        response = await userApi.getFollowers(listOwnerId.value)
         break
     }
 
@@ -130,10 +131,15 @@ async function loadUserList(type) {
         return transformedUser
       })
     } else {
+      if (response.message) {
+        accessMessage.value = response.message
+        messageManager.warning(response.message)
+      }
       userLists.value[type] = []
     }
   } catch (error) {
     console.error(`加载${type}列表失败:`, error)
+    accessMessage.value = '加载列表失败，请稍后重试'
     userLists.value[type] = []
   } finally {
     loading.value = false
@@ -151,7 +157,8 @@ function onTabClick(tabName) {
 
   router.replace({
     name: 'follow_list',
-    params: { type: tabName }
+    params: { type: tabName },
+    query: route.query
   })
 
   if (userLists.value[tabName].length === 0) {
@@ -185,12 +192,22 @@ function goTop() {
 
 onMounted(() => {
   userStore.initUserInfo()
-  if (!userStore.isLoggedIn) {
-    console.warn('用户未登录，跳转回首页')
-    router.push('/')
-    return
-  }
+  loadUserList(activeTab.value)
+})
 
+watch(() => route.params.type, (newType) => {
+  if (newType) {
+    activeTab.value = newType
+    loadUserList(newType)
+  }
+})
+
+watch(() => route.query.userId, () => {
+  userLists.value = {
+    mutual: [],
+    following: [],
+    followers: []
+  }
   loadUserList(activeTab.value)
 })
 </script>
@@ -230,6 +247,7 @@ onMounted(() => {
       <div class="content-item" :class="{ active: activeTab === 'mutual' }"
         :style="{ transform: activeTab === 'mutual' ? 'translateX(0%)' : 'translateX(-100%)' }">
         <div class="user-list-container">
+          <div v-if="accessMessage && activeTab === 'mutual'" class="access-message">{{ accessMessage }}</div>
           <UserList :users="userLists.mutual" :loading="loading && activeTab === 'mutual'" @follow="handleFollow"
             @unfollow="handleUnfollow" @userClick="handleUserClick" />
         </div>
@@ -239,6 +257,7 @@ onMounted(() => {
       <div class="content-item" :class="{ active: activeTab === 'following' }"
         :style="{ transform: activeTab === 'following' ? 'translateX(0%)' : (activeTab === 'mutual' ? 'translateX(100%)' : 'translateX(-100%)') }">
         <div class="user-list-container">
+          <div v-if="accessMessage && activeTab === 'following'" class="access-message">{{ accessMessage }}</div>
           <UserList :users="userLists.following" :loading="loading && activeTab === 'following'" @follow="handleFollow"
             @unfollow="handleUnfollow" @userClick="handleUserClick" />
         </div>
@@ -248,6 +267,7 @@ onMounted(() => {
       <div class="content-item" :class="{ active: activeTab === 'followers' }"
         :style="{ transform: activeTab === 'followers' ? 'translateX(0%)' : 'translateX(100%)' }">
         <div class="user-list-container">
+          <div v-if="accessMessage && activeTab === 'followers'" class="access-message">{{ accessMessage }}</div>
           <UserList :users="userLists.followers" :loading="loading && activeTab === 'followers'" @follow="handleFollow"
             @unfollow="handleUnfollow" @userClick="handleUserClick" />
         </div>
@@ -258,6 +278,18 @@ onMounted(() => {
     <BackToTopButton />
   </div>
 </template>
+
+<style scoped>
+.access-message {
+  margin: 0 16px 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--bg-color-secondary);
+  color: var(--text-color-secondary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+</style>
 
 <style scoped>
 /* ---------- 1. 全局样式设置 ---------- */

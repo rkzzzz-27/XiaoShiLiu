@@ -357,6 +357,10 @@ router.put('/read-all', authenticateToken, async (req, res) => {
       [userId.toString()]
     );
 
+    await pool.execute(
+      'UPDATE messages SET is_read = 1 WHERE receiver_id = ? AND is_read = 0',
+      [userId.toString()]
+    );
 
     res.json({ code: RESPONSE_CODES.SUCCESS, message: '全部标记成功' });
   } catch (error) {
@@ -393,29 +397,39 @@ router.get('/unread-count-by-type', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // 按类型统计未读通知数量
-    const [result] = await pool.execute(
+    const [notificationResult] = await pool.execute(
       `SELECT 
         SUM(CASE WHEN type IN (4, 5, 7, 8) THEN 1 ELSE 0 END) as comments,
         SUM(CASE WHEN type IN (1, 2) THEN 1 ELSE 0 END) as likes,
         SUM(CASE WHEN type = 3 THEN 1 ELSE 0 END) as collections,
-        SUM(CASE WHEN type = 6 THEN 1 ELSE 0 END) as follows,
-        COUNT(*) as total
+        SUM(CASE WHEN type = 6 THEN 1 ELSE 0 END) as follows
       FROM notifications 
       WHERE user_id = ? AND is_read = 0`,
       [userId.toString()]
     );
 
-    const counts = result[0];
+    const [messageResult] = await pool.execute(
+      'SELECT COUNT(*) as count FROM messages WHERE receiver_id = ? AND is_read = 0',
+      [userId.toString()]
+    );
+
+    const counts = notificationResult[0] || {};
+    const messageCount = parseInt(messageResult[0]?.count || 0);
+    const comments = parseInt(counts.comments || 0);
+    const likes = parseInt(counts.likes || 0);
+    const collections = parseInt(counts.collections || 0);
+    const follows = parseInt(counts.follows || 0);
+
     res.json({
       code: RESPONSE_CODES.SUCCESS,
       message: 'success',
       data: {
-        comments: parseInt(counts.comments || 0),
-        likes: parseInt(counts.likes || 0),
-        collections: parseInt(counts.collections || 0),
-        follows: parseInt(counts.follows || 0),
-        total: parseInt(counts.total || 0)
+        comments,
+        likes,
+        collections,
+        follows,
+        messages: messageCount,
+        total: comments + likes + collections + follows + messageCount
       }
     });
   } catch (error) {
@@ -429,15 +443,23 @@ router.get('/unread-count', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const [result] = await pool.execute(
+    const [notificationResult] = await pool.execute(
       'SELECT COUNT(*) as count FROM notifications WHERE user_id = ? AND is_read = 0',
       [userId.toString()]
     );
 
+    const [messageResult] = await pool.execute(
+      'SELECT COUNT(*) as count FROM messages WHERE receiver_id = ? AND is_read = 0',
+      [userId.toString()]
+    );
+
+    const notificationCount = parseInt(notificationResult[0]?.count || 0);
+    const messageCount = parseInt(messageResult[0]?.count || 0);
+
     res.json({
       code: RESPONSE_CODES.SUCCESS,
       message: 'success',
-      data: { count: result[0].count }
+      data: { count: notificationCount + messageCount }
     });
   } catch (error) {
     console.error('获取未读通知数量失败:', error);

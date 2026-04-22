@@ -250,7 +250,8 @@ function goTop() {
 function goToFollowList(type) {
   router.push({
     name: 'follow_list',
-    params: { type }
+    params: { type },
+    query: { userId: userStore.userInfo?.user_id || '' }
   })
 }
 

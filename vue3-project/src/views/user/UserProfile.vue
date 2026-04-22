@@ -14,6 +14,7 @@ import ContentRenderer from '@/components/ContentRenderer.vue'
 import BackToTopButton from '@/components/BackToTopButton.vue'
 import ImageViewer from '@/components/ImageViewer.vue'
 import VerifiedBadge from '@/components/VerifiedBadge.vue'
+import messageManager from '@/utils/messageManager'
 
 const route = useRoute()
 const router = useRouter()
@@ -143,6 +144,19 @@ function goTop() {
 // 跳转到私聊页面
 const goToChat = () => {
   router.push(`/chat/${userId.value}`)
+}
+
+const goToFollowList = (type) => {
+  if (!isCurrentUser.value && Number(userInfo.value?.follow_list_public ?? 1) !== 1) {
+    messageManager.warning('该用户已关闭关注与粉丝列表')
+    return
+  }
+
+  router.push({
+    name: 'follow_list',
+    params: { type },
+    query: { userId: userId.value }
+  })
 }
 
 // 获取用户信息
@@ -289,11 +303,11 @@ onMounted(async () => {
 
       <UserPersonalityTags :user-info="userInfo" />
       <div class="user-interactions">
-        <div class="interaction-item">
+        <div class="interaction-item" @click="goToFollowList('following')">
           <span class="count">{{ userStats.follow_count || 0 }}</span>
           <span class="shows">关注</span>
         </div>
-        <div class="interaction-item">
+        <div class="interaction-item" @click="goToFollowList('followers')">
           <span class="count">{{ userStats.fans_count || 0 }}</span>
           <span class="shows">粉丝</span>
         </div>

@@ -21,6 +21,11 @@ export const chatApi = {
     return request.get('/chat/list')
   },
 
+  // 获取未读私信总数
+  getUnreadCount() {
+    return request.get('/chat/messages/unread/count')
+  },
+
   // 删除单条消息
   deleteMessage(messageId) {
     return request.delete(`/chat/messages/${messageId}`)

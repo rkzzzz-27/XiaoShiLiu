@@ -38,6 +38,7 @@ class DatabaseInitializer {
 
       // 创建用户表
       await this.createUsersTable(connection);
+      await this.ensureUserPrivacyColumns(connection);
 
       // 创建管理员表
       await this.createAdminTable(connection);
@@ -74,6 +75,9 @@ class DatabaseInitializer {
 
       // 创建通知表
       await this.createNotificationsTable(connection);
+
+      // 创建私信消息表
+      await this.createMessagesTable(connection);
 
       // 创建用户会话表
       await this.createUserSessionsTable(connection);
@@ -116,6 +120,7 @@ class DatabaseInitializer {
         \`location\` varchar(100) DEFAULT NULL COMMENT 'IP属地',
         \`follow_count\` int(11) DEFAULT 0 COMMENT '关注数',
         \`fans_count\` int(11) DEFAULT 0 COMMENT '粉丝数',
+        \`follow_list_public\` tinyint(1) DEFAULT 1 COMMENT '是否公开关注与粉丝列表',
         \`like_count\` int(11) DEFAULT 0 COMMENT '获赞数',
         \`is_active\` tinyint(1) DEFAULT 1 COMMENT '是否激活',
         \`last_login_at\` timestamp NULL DEFAULT NULL COMMENT '最后登录时间',
@@ -137,6 +142,19 @@ class DatabaseInitializer {
     `;
     await connection.execute(sql);
     console.log('✓ users 表创建成功');
+  }
+
+  async ensureUserPrivacyColumns(connection) {
+    const [columns] = await connection.execute(
+      "SHOW COLUMNS FROM `users` LIKE 'follow_list_public'"
+    );
+
+    if (columns.length === 0) {
+      await connection.execute(
+        "ALTER TABLE `users` ADD COLUMN `follow_list_public` tinyint(1) DEFAULT 1 COMMENT '是否公开关注与粉丝列表' AFTER `fans_count`"
+      );
+      console.log('✓ users.follow_list_public 字段补充成功');
+    }
   }
 
   async createAdminTable(connection) {
@@ -379,6 +397,28 @@ class DatabaseInitializer {
     console.log('✓ notifications 表创建成功');
   }
 
+  async createMessagesTable(connection) {
+    const sql = `
+      CREATE TABLE IF NOT EXISTS \`messages\` (
+        \`id\` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '消息ID',
+        \`sender_id\` bigint(20) NOT NULL COMMENT '发送者ID',
+        \`receiver_id\` bigint(20) NOT NULL COMMENT '接收者ID',
+        \`content\` text NOT NULL COMMENT '消息内容',
+        \`is_read\` tinyint(1) DEFAULT 0 COMMENT '是否已读',
+        \`created_at\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
+        PRIMARY KEY (\`id\`),
+        KEY \`idx_sender_id\` (\`sender_id\`),
+        KEY \`idx_receiver_id\` (\`receiver_id\`),
+        KEY \`idx_receiver_read\` (\`receiver_id\`, \`is_read\`),
+        KEY \`idx_message_created_at\` (\`created_at\`),
+        CONSTRAINT \`messages_ibfk_1\` FOREIGN KEY (\`sender_id\`) REFERENCES \`users\` (\`id\`) ON DELETE CASCADE,
+        CONSTRAINT \`messages_ibfk_2\` FOREIGN KEY (\`receiver_id\`) REFERENCES \`users\` (\`id\`) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='私信消息表';
+    `;
+    await connection.execute(sql);
+    console.log('✓ messages 表创建成功');
+  }
+
   async createUserSessionsTable(connection) {
     const sql = `
       CREATE TABLE IF NOT EXISTS \`user_sessions\` (
@@ -557,6 +597,11 @@ class DatabaseInitializer {
 // 等待用户按回车退出
 async function waitForExit() {
   console.log('\n按回车键退出...');
+
+  if (!process.stdin.isTTY || typeof process.stdin.setRawMode !== 'function') {
+    return;
+  }
+
   return new Promise((resolve) => {
     process.stdin.setRawMode(true);
     process.stdin.resume();

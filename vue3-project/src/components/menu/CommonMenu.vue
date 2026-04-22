@@ -7,12 +7,14 @@ import { useAuthStore } from '@/stores/auth'
 import { useAboutStore } from '@/stores/about'
 import { useKeyboardShortcutsStore } from '@/stores/keyboardShortcuts'
 import { useAccountSecurityStore } from '@/stores/accountSecurity'
+import { useSettingsStore } from '@/stores/settings'
 import ColorPickerMenuItem from '@/components/menu/ColorPickerMenuItem.vue'
 const userStore = useUserStore()
 const authStore = useAuthStore()
 const aboutStore = useAboutStore()
 const keyboardShortcutsStore = useKeyboardShortcutsStore()
 const accountSecurityStore = useAccountSecurityStore()
+const settingsStore = useSettingsStore()
 
 // 登录处理
 const handleLoginClick = () => {
@@ -42,6 +44,8 @@ const handleMenuClick = (action) => {
     accountSecurityStore.openAccountSecurityModal()
   } else if (action === 'keyboardShortcuts') {
     keyboardShortcutsStore.openKeyboardShortcutsModal()
+  } else if (action === 'settings') {
+    settingsStore.openSettingsModal()
   }
 }
 </script>
@@ -53,6 +57,9 @@ const handleMenuClick = (action) => {
   </DropdownItem>
   <DropdownItem @click="handleMenuClick('keyboardShortcuts')">
     键盘快捷键
+  </DropdownItem>
+  <DropdownItem v-if="userStore.isLoggedIn" @click="handleMenuClick('settings')">
+    设置
   </DropdownItem>
   <DropdownItem v-if="userStore.isLoggedIn" @click="handleMenuClick('accountSecurity')">
     账号与安全

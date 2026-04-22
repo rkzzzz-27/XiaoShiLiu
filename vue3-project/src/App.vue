@@ -7,6 +7,7 @@ import { useAboutStore } from '@/stores/about'
 import { useChangePasswordStore } from '@/stores/changePassword'
 import { useKeyboardShortcutsStore } from '@/stores/keyboardShortcuts'
 import { useAccountSecurityStore } from '@/stores/accountSecurity'
+import { useSettingsStore } from '@/stores/settings'
 import { useVerifiedStore } from '@/stores/verified'
 import AuthModal from '@/components/modals/AuthModal.vue'
 import ResetPasswordModal from '@/components/modals/ResetPasswordModal.vue'
@@ -14,6 +15,7 @@ import AboutModal from '@/components/modals/AboutModal.vue'
 import ChangePasswordModal from '@/components/modals/ChangePasswordModal.vue'
 import KeyboardShortcutsModal from '@/components/modals/KeyboardShortcutsModal.vue'
 import AccountSecurityModal from '@/components/modals/AccountSecurityModal.vue'
+import SettingsModal from '@/components/modals/SettingsModal.vue'
 import VerifiedModal from '@/components/modals/VerifiedModal.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import { useConfirm } from '@/views/admin/composables/useConfirm'
@@ -24,6 +26,7 @@ const aboutStore = useAboutStore()
 const changePasswordStore = useChangePasswordStore()
 const keyboardShortcutsStore = useKeyboardShortcutsStore()
 const accountSecurityStore = useAccountSecurityStore()
+const settingsStore = useSettingsStore()
 const verifiedStore = useVerifiedStore()
 const { confirmState, handleConfirm, handleCancel } = useConfirm()
 
@@ -120,6 +123,7 @@ onMounted(() => {
       @close="changePasswordStore.closeChangePasswordModal" />
     <KeyboardShortcutsModal v-if="keyboardShortcutsStore.showKeyboardShortcutsModal"
       @close="keyboardShortcutsStore.closeKeyboardShortcutsModal" />
+    <SettingsModal v-model:visible="settingsStore.showSettingsModal" @close="settingsStore.closeSettingsModal" />
     <AccountSecurityModal v-model:visible="accountSecurityStore.showAccountSecurityModal"
       @close="accountSecurityStore.closeAccountSecurityModal" />
     <VerifiedModal v-if="verifiedStore.showVerifiedModal" @close="verifiedStore.closeVerifiedModal" />

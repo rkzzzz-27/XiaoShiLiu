@@ -11,7 +11,8 @@ export const useNotificationStore = defineStore('notification', () => {
     comments: 0,
     likes: 0,
     collections: 0,
-    follows: 0
+    follows: 0,
+    messages: 0
   })
 
   // 获取未读通知数量
@@ -35,7 +36,8 @@ export const useNotificationStore = defineStore('notification', () => {
         comments: response.comments || 0,
         likes: response.likes || 0,
         collections: response.collections || 0,
-        follows: response.follows || 0
+        follows: response.follows || 0,
+        messages: response.messages || 0
       }
       // 同时更新总数
       unreadCount.value = response.total || 0
@@ -46,7 +48,8 @@ export const useNotificationStore = defineStore('notification', () => {
         comments: 0,
         likes: 0,
         collections: 0,
-        follows: 0
+        follows: 0,
+        messages: 0
       }
       return unreadCountByType.value
     }
@@ -77,7 +80,8 @@ export const useNotificationStore = defineStore('notification', () => {
       comments: 0,
       likes: 0,
       collections: 0,
-      follows: 0
+      follows: 0,
+      messages: 0
     }
   }
 
@@ -88,7 +92,8 @@ export const useNotificationStore = defineStore('notification', () => {
       comments: 0,
       likes: 0,
       collections: 0,
-      follows: 0
+      follows: 0,
+      messages: 0
     }
   }
 

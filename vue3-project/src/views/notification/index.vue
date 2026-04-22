@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick, watch, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import SimpleSpinner from '@/components/spinner/SimpleSpinner.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import MessageToast from '@/components/MessageToast.vue'
@@ -14,6 +15,7 @@ import DetailCard from '@/components/DetailCard.vue'
 import BackToTopButton from '@/components/BackToTopButton.vue'
 import VerifiedBadge from '@/components/VerifiedBadge.vue'
 import { getCommentNotifications, getLikeNotifications, getFollowNotifications, getCollectionNotifications, markNotificationAsRead, markAllNotificationsAsRead } from '@/api/notification.js'
+import { chatApi } from '@/api/chat.js'
 import { getPostDetail } from '@/api/posts.js'
 import { postApi, userApi, commentApi } from '@/api/index.js'
 import { useUserStore } from '@/stores/user'
@@ -31,6 +33,7 @@ import imagePlaceholder from '@/assets/imgs/未加载.png'
 
 // Store实例
 const userStore = useUserStore()
+const router = useRouter()
 const commentLikeStore = useCommentLikeStore()
 const commentStore = useCommentStore()
 const authStore = useAuthStore()
@@ -44,7 +47,8 @@ const TABS = [
   { key: 'comments', label: '评论和@' },
   { key: 'likes', label: '点赞' },
   { key: 'collections', label: '收藏' },
-  { key: 'follows', label: '新增关注' }
+  { key: 'follows', label: '新增关注' },
+  { key: 'messages', label: '私信' }
 ]
 
 // 响应式数据
@@ -55,6 +59,7 @@ const commentsData = ref([])
 const likesData = ref([])
 const collectionsData = ref([])
 const followsData = ref([])
+const messagesData = ref([])
 
 // 详情卡片相关状态
 const showDetailCard = ref(false)
@@ -71,7 +76,8 @@ const pagination = ref({
   comments: { page: 1, hasMore: true, loading: false },
   likes: { page: 1, hasMore: true, loading: false },
   collections: { page: 1, hasMore: true, loading: false },
-  follows: { page: 1, hasMore: true, loading: false }
+  follows: { page: 1, hasMore: true, loading: false },
+  messages: { page: 1, hasMore: false, loading: false }
 })
 
 const PAGE_SIZE = 20 // 每页加载数量
@@ -81,7 +87,8 @@ const loadMoreTriggers = ref({
   comments: null,
   likes: null,
   collections: null,
-  follows: null
+  follows: null,
+  messages: null
 })
 const observer = ref(null)
 
@@ -429,6 +436,40 @@ async function loadCollectionsData(isLoadMore = false) {
   }
 }
 
+// 加载私信会话数据
+async function loadMessagesData() {
+  const tabPagination = pagination.value.messages
+
+  if (!isLoggedIn.value || tabPagination.loading) return
+  if (loadedTabs.value.has('messages')) return
+
+  tabPagination.loading = true
+
+  try {
+    const response = await chatApi.getChatList()
+    const conversations = Array.isArray(response.data) ? response.data : []
+
+    messagesData.value = conversations.map(item => ({
+      id: item.contact_user_id,
+      autoId: item.contact_id,
+      username: item.contact_nickname || '未知用户',
+      avatar: item.contact_avatar || new URL('@/assets/imgs/avatar.png', import.meta.url).href,
+      content: item.last_message || '',
+      time: formatTime(item.last_message_time),
+      lastMessageTime: item.last_message_time,
+      unreadCount: Number(item.unread_count || 0)
+    }))
+
+    tabPagination.hasMore = false
+    loadedTabs.value.add('messages')
+  } catch (error) {
+    console.error('加载私信会话失败:', error)
+    messagesData.value = []
+  } finally {
+    tabPagination.loading = false
+  }
+}
+
 
 
 // 根据当前tab加载对应数据
@@ -462,6 +503,9 @@ async function loadCurrentTabData() {
         break
       case 'follows':
         await loadFollowsData()
+        break
+      case 'messages':
+        await loadMessagesData()
         break
     }
 
@@ -551,6 +595,10 @@ async function markAllAsRead() {
         item.isRead = true
       })
     }
+    messagesData.value = messagesData.value.map(item => ({
+      ...item,
+      unreadCount: 0
+    }))
     // 清空未读数量
     notificationStore.clearUnreadCount()
 
@@ -618,6 +666,11 @@ const onImageClick = async (notification) => {
     }
   }
 };
+
+const openMessageConversation = async (item) => {
+  item.unreadCount = 0
+  await router.push(`/chat/${item.id}`)
+}
 
 
 
@@ -692,7 +745,8 @@ const getUserHoverConfig = (userId) => {
       follows: followsData.value,
       comments: commentsData.value,
       likes: likesData.value,
-      collections: collectionsData.value
+      collections: collectionsData.value,
+      messages: messagesData.value
     }
     return dataMap[activeTab.value] || []
   }
@@ -853,6 +907,8 @@ async function loadMoreData() {
         break
       case 'follows':
         await loadFollowsData(true)
+        break
+      case 'messages':
         break
     }
   } finally {
@@ -1189,6 +1245,7 @@ watch(isLoggedIn, async (newValue, oldValue) => {
     likesData.value = []
     collectionsData.value = []
     followsData.value = []
+    messagesData.value = []
 
     // 清空已加载记录
     loadedTabs.value.clear()
@@ -1229,7 +1286,7 @@ watch(isLoggedIn, async (newValue, oldValue) => {
         <div class="prompt-content">
           <SvgIcon name="notification" width="48" height="48" class="prompt-icon" />
           <h3>请先登录</h3>
-          <p>登录后即可查看评论、点赞和关注通知</p>
+          <p>登录后即可查看评论、点赞、关注和私信通知</p>
         </div>
       </div>
 
@@ -1459,6 +1516,46 @@ watch(isLoggedIn, async (newValue, oldValue) => {
 
               <div v-if="pagination.follows.hasMore" :ref="el => loadMoreTriggers.follows = el"
                 class="load-more-trigger"></div>
+            </template>
+
+            <template v-else-if="activeTab === 'messages'">
+
+              <div v-if="messagesData.length === 0 && !isLoading && loadedTabs.has('messages')" class="empty-state">
+                <SvgIcon name="chat" width="48" height="48" class="empty-icon" />
+                <h3>暂无私信</h3>
+                <p>收到私信后，这里会显示发信人和未读消息数</p>
+              </div>
+
+              <div v-for="item in messagesData" :key="item.autoId" class="notification-item message-notification-item"
+                :class="{ 'unread': item.unreadCount > 0 }" @click="openMessageConversation(item)">
+                <div class="left-section">
+                  <a class="user-avatar clickable-avatar" v-user-hover="getUserHoverConfig(item.id)"
+                    @click.stop="onUserClick(item.id, $event)">
+                    <img v-img-lazy="item.avatar" :alt="item.username" class="lazy-avatar" @error="handleImageError" />
+                  </a>
+                  <div v-if="item.unreadCount > 0" class="unread-dot"></div>
+                </div>
+
+                <div class="right-section">
+                  <div class="notification-content">
+                    <div class="username-container">
+                      <a class="username clickable-name" v-user-hover="getUserHoverConfig(item.id)"
+                        @click.stop="onUserClick(item.id, $event)">{{ item.username }}</a>
+                    </div>
+                    <div class="interaction-hint">
+                      <span class="action">发来私信</span>
+                      <span class="time">{{ item.time }}</span>
+                    </div>
+                    <div class="notification-text message-preview">
+                      {{ item.content || '点击查看历史消息' }}
+                    </div>
+                  </div>
+
+                  <div v-if="item.unreadCount > 0" class="message-unread-count">
+                    {{ item.unreadCount > 99 ? '99+' : item.unreadCount }}
+                  </div>
+                </div>
+              </div>
             </template>
           </div>
         </div>
@@ -1741,6 +1838,10 @@ watch(isLoggedIn, async (newValue, oldValue) => {
   padding-top: 20px;
 }
 
+.message-notification-item {
+  cursor: pointer;
+}
+
 .right-section {
   flex: 1;
   min-width: 0;
@@ -1850,6 +1951,12 @@ watch(isLoggedIn, async (newValue, oldValue) => {
   cursor: pointer;
 }
 
+.message-preview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .replied-comment {
   margin-top: 7px;
   padding: 1px 12px;
@@ -1886,6 +1993,21 @@ watch(isLoggedIn, async (newValue, oldValue) => {
   display: flex;
   align-items: center;
   margin-left: 12px;
+}
+
+.message-unread-count {
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  margin-left: 12px;
+  border-radius: 999px;
+  background: var(--danger-color);
+  color: #fff;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 /* 懒加载相关样式 */

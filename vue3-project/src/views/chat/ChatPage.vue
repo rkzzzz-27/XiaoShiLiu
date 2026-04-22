@@ -1,44 +1,67 @@
 <template>
   <div class="chat-page">
-    <!-- 顶部导航栏 -->
     <div class="chat-header">
       <button class="back-btn" @click="goBack">
         <SvgIcon name="back" width="24" height="24" />
       </button>
+
       <div class="chat-user-info">
         <img :src="chatUser.avatar || defaultAvatar" class="chat-avatar" @error="handleAvatarError" />
         <span class="chat-nickname">{{ chatUser.nickname || '用户' }}</span>
       </div>
+
       <div class="header-placeholder"></div>
     </div>
 
-    <!-- 消息列表 -->
     <div class="message-list" ref="messageListRef">
-      <div v-for="(msg, index) in messages" :key="msg.id" class="message-item"
-        :class="{ 'message-self': msg.senderId === currentUserId, 'message-other': msg.senderId !== currentUserId }">
-        <!-- 时间分隔线 -->
-        <div v-if="shouldShowTime(index)" class="time-divider">
-          {{ formatTime(msg.createdAt) }}
-        </div>
+      <div v-if="loading" class="empty-state">
+        <SvgIcon name="chat" width="48" height="48" />
+        <p>正在加载私信...</p>
+      </div>
 
-        <div class="message-content-wrapper">
-          <img v-if="msg.senderId !== currentUserId" :src="chatUser.avatar || defaultAvatar" class="msg-avatar"
-            @error="handleAvatarError" />
-          <img v-else :src="currentUser.avatar || defaultAvatar" class="msg-avatar" @error="handleAvatarError" />
+      <div v-else-if="loadError" class="empty-state">
+        <SvgIcon name="chat" width="48" height="48" />
+        <p>{{ loadError }}</p>
+      </div>
 
-          <div class="message-bubble">
-            <div class="message-text" v-html="renderContent(msg.content)"></div>
+      <template v-else>
+        <div
+          v-for="(msg, index) in messages"
+          :key="msg.id"
+          class="message-item"
+          :class="{ 'message-self': msg.senderId === currentUserAutoId, 'message-other': msg.senderId !== currentUserAutoId }"
+        >
+          <div v-if="shouldShowTime(index)" class="time-divider">
+            {{ formatMessageTime(msg.createdAt) }}
+          </div>
+
+          <div class="message-content-wrapper">
+            <img
+              v-if="msg.senderId !== currentUserAutoId"
+              :src="chatUser.avatar || defaultAvatar"
+              class="msg-avatar"
+              @error="handleAvatarError"
+            />
+            <img
+              v-else
+              :src="currentUser.avatar || defaultAvatar"
+              class="msg-avatar"
+              @error="handleAvatarError"
+            />
+
+            <div class="message-bubble">
+              <div class="message-text">{{ msg.content }}</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div v-if="messages.length === 0" class="empty-state">
-        <SvgIcon name="chat" width="48" height="48" />
-        <p>开始聊天吧 ~</p>
-      </div>
+        <div v-if="messages.length === 0" class="empty-state">
+          <SvgIcon name="chat" width="48" height="48" />
+          <p>开始聊天吧 ~</p>
+        </div>
+      </template>
     </div>
 
-    <!-- 底部输入区域 -->
     <div class="chat-input-area">
       <div class="input-toolbar">
         <button class="toolbar-btn" @click="toggleEmojiPanel">
@@ -47,14 +70,20 @@
       </div>
 
       <div class="input-wrapper">
-        <ContentEditableInput ref="inputRef" v-model="inputContent" :input-class="'chat-input'"
-          placeholder="说点什么..." :enable-ctrl-enter-send="true" @send="handleSend" />
-        <button class="send-btn" :disabled="!canSend" @click="handleSend">
-          <SvgIcon name="send" width="20" height="20" />
+        <ContentEditableInput
+          ref="inputRef"
+          v-model="inputContent"
+          :input-class="'chat-input'"
+          placeholder="说点什么..."
+          :enable-ctrl-enter-send="true"
+          @send="handleSend"
+        />
+        <button class="send-btn" :disabled="!canSend || sending || loading" @click="handleSend">
+          <SvgIcon name="send" width="18" height="18" />
+          <span>发送</span>
         </button>
       </div>
 
-      <!-- Emoji 面板 -->
       <div v-if="showEmojiPanel" class="emoji-panel-overlay" v-click-outside="closeEmojiPanel">
         <div class="emoji-panel" @click.stop>
           <EmojiPicker @select="handleEmojiSelect" />
@@ -65,142 +94,66 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { useNotificationStore } from '@/stores/notification'
 import { userApi } from '@/api'
+import { chatApi } from '@/api/chat'
 import ContentEditableInput from '@/components/ContentEditableInput.vue'
 import EmojiPicker from '@/components/EmojiPicker.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
+import messageManager from '@/utils/messageManager'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const notificationStore = useNotificationStore()
 
 const defaultAvatar = new URL('@/assets/imgs/avatar.png', import.meta.url).href
+const TEN_MINUTES = 10 * 60 * 1000
+const MESSAGE_POLL_INTERVAL = 5000
 
-const chatUserId = ref(route.params.userId)
 const chatUser = ref({
   id: null,
   user_id: '',
   nickname: '',
   avatar: ''
 })
-
-const currentUser = computed(() => userStore.userInfo || {})
-const currentUserId = computed(() => userStore.userInfo?.user_id || '')
-
 const messages = ref([])
 const inputContent = ref('')
 const inputRef = ref(null)
 const messageListRef = ref(null)
 const showEmojiPanel = ref(false)
+const loading = ref(false)
+const sending = ref(false)
+const loadError = ref('')
+const timeRefreshToken = ref(Date.now())
 
-const canSend = computed(() => inputContent.value.trim().length > 0)
+let timeRefreshTimer = null
+let messagePollTimer = null
 
-// 获取聊天对象的 localStorage key
-const getStorageKey = () => {
-  const uid = currentUserId.value || 'guest'
-  return `chat_messages_${uid}_${chatUserId.value}`
+const currentUser = computed(() => userStore.userInfo || {})
+const currentUserAutoId = computed(() => Number(userStore.userInfo?.id || 0))
+const chatPublicUserId = computed(() => String(route.params.userId || ''))
+const canSend = computed(() => inputContent.value.trim().length > 0 && !!chatUser.value.id)
+
+const normalizeMessage = (message) => ({
+  id: message.id,
+  senderId: Number(message.sender_id),
+  receiverId: Number(message.receiver_id),
+  content: message.content || '',
+  createdAt: message.created_at,
+  isRead: Number(message.is_read) === 1
+})
+
+const touchTimeRefreshToken = () => {
+  timeRefreshToken.value = Date.now()
 }
 
-// 从 localStorage 加载消息
-const loadMessages = () => {
-  try {
-    const key = getStorageKey()
-    const stored = localStorage.getItem(key)
-    if (stored) {
-      messages.value = JSON.parse(stored)
-    }
-  } catch (error) {
-    console.error('加载聊天记录失败:', error)
-  }
-}
+const formatMessageTime = (timeStr) => {
+  void timeRefreshToken.value
 
-// 保存消息到 localStorage
-const saveMessages = () => {
-  try {
-    const key = getStorageKey()
-    localStorage.setItem(key, JSON.stringify(messages.value))
-  } catch (error) {
-    console.error('保存聊天记录失败:', error)
-  }
-}
-
-// 获取对方用户信息
-const loadChatUser = async () => {
-  try {
-    const response = await userApi.getUserInfo(chatUserId.value)
-    if (response.success) {
-      chatUser.value = response.data
-    }
-  } catch (error) {
-    console.error('获取用户信息失败:', error)
-  }
-}
-
-// 发送消息
-const handleSend = () => {
-  const content = inputContent.value.trim()
-  if (!content) return
-
-  const newMessage = {
-    id: Date.now(),
-    senderId: currentUserId.value,
-    receiverId: chatUserId.value,
-    content: content,
-    type: 'text',
-    createdAt: new Date().toISOString(),
-    isRead: false
-  }
-
-  messages.value.push(newMessage)
-  saveMessages()
-  inputContent.value = ''
-
-  // 滚动到底部
-  nextTick(() => {
-    scrollToBottom()
-  })
-
-  // 自动回复功能已移除
-}
-
-// Emoji 选择
-const handleEmojiSelect = (emoji) => {
-  const emojiChar = emoji.i
-  if (inputRef.value && inputRef.value.insertEmoji) {
-    inputRef.value.insertEmoji(emojiChar)
-  } else {
-    inputContent.value += emojiChar
-  }
-}
-
-const toggleEmojiPanel = () => {
-  showEmojiPanel.value = !showEmojiPanel.value
-}
-
-const closeEmojiPanel = () => {
-  showEmojiPanel.value = false
-}
-
-// 滚动到底部
-const scrollToBottom = () => {
-  if (messageListRef.value) {
-    messageListRef.value.scrollTop = messageListRef.value.scrollHeight
-  }
-}
-
-// 判断是否显示时间分隔线
-const shouldShowTime = (index) => {
-  if (index === 0) return true
-  const current = new Date(messages.value[index].createdAt)
-  const prev = new Date(messages.value[index - 1].createdAt)
-  return current - prev > 5 * 60 * 1000 // 超过5分钟显示时间
-}
-
-// 格式化时间
-const formatTime = (timeStr) => {
   const date = new Date(timeStr)
   const now = new Date()
   const diff = now - date
@@ -220,31 +173,201 @@ const formatTime = (timeStr) => {
   return `${month}-${day} ${hours}:${minutes}`
 }
 
-// 渲染消息内容（处理换行）
-const renderContent = (content) => {
-  return content.replace(/\n/g, '<br>')
+const shouldShowTime = (index) => {
+  if (index === 0) return true
+
+  const currentTime = new Date(messages.value[index].createdAt).getTime()
+  const prevTime = new Date(messages.value[index - 1].createdAt).getTime()
+
+  return currentTime - prevTime >= TEN_MINUTES
 }
 
-// 返回上一页
-const goBack = () => {
-  router.back()
+const scrollToBottom = () => {
+  if (messageListRef.value) {
+    messageListRef.value.scrollTop = messageListRef.value.scrollHeight
+  }
+}
+
+const isNearBottom = () => {
+  if (!messageListRef.value) return true
+
+  const { scrollTop, scrollHeight, clientHeight } = messageListRef.value
+  return scrollHeight - scrollTop - clientHeight < 120
 }
 
 const handleAvatarError = (event) => {
   event.target.src = defaultAvatar
 }
 
-// 监听消息变化，自动滚动
-watch(() => messages.value.length, () => {
-  nextTick(() => {
-    scrollToBottom()
+const toggleEmojiPanel = () => {
+  showEmojiPanel.value = !showEmojiPanel.value
+}
+
+const closeEmojiPanel = () => {
+  showEmojiPanel.value = false
+}
+
+const handleEmojiSelect = (emoji) => {
+  const emojiChar = emoji.i
+  if (inputRef.value && inputRef.value.insertEmoji) {
+    inputRef.value.insertEmoji(emojiChar)
+  } else {
+    inputContent.value += emojiChar
+  }
+}
+
+const loadChatUser = async () => {
+  const response = await userApi.getUserInfo(chatPublicUserId.value)
+
+  if (!response.success || !response.data) {
+    throw new Error(response.message || '聊天对象不存在')
+  }
+
+  chatUser.value = response.data
+}
+
+const loadMessages = async (options = {}) => {
+  if (!chatUser.value.id) return
+
+  const { silent = false } = options
+
+  const response = await chatApi.getMessages(chatUser.value.id, {
+    page: 1,
+    limit: 200
   })
+
+  if (!response.success) {
+    throw new Error(response.message || '获取聊天记录失败')
+  }
+
+  const nextMessages = Array.isArray(response.data?.messages)
+    ? response.data.messages.map(normalizeMessage)
+    : []
+
+  const previousLastId = messages.value[messages.value.length - 1]?.id
+  const nextLastId = nextMessages[nextMessages.length - 1]?.id
+  const shouldStickToBottom = !silent || isNearBottom() || previousLastId !== nextLastId
+
+  messages.value = nextMessages
+
+  await notificationStore.fetchUnreadCountByType()
+  touchTimeRefreshToken()
+
+  if (shouldStickToBottom) {
+    await nextTick()
+    scrollToBottom()
+  }
+}
+
+const initializeChat = async () => {
+  if (!userStore.userInfo) {
+    userStore.initUserInfo()
+  }
+
+  if (!userStore.isLoggedIn) {
+    loadError.value = '请先登录后查看私信'
+    return
+  }
+
+  loading.value = true
+  loadError.value = ''
+  messages.value = []
+
+  try {
+    await loadChatUser()
+    await loadMessages()
+  } catch (error) {
+    console.error('加载私信失败:', error)
+    loadError.value = error.message || '加载私信失败'
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleSend = async () => {
+  const content = inputContent.value.trim()
+
+  if (!content || !chatUser.value.id || sending.value) return
+
+  sending.value = true
+
+  try {
+    const response = await chatApi.sendMessage({
+      receiver_id: chatUser.value.id,
+      content
+    })
+
+    if (!response.success || !response.data) {
+      throw new Error(response.message || '发送失败')
+    }
+
+    messages.value.push(normalizeMessage(response.data))
+    inputContent.value = ''
+    touchTimeRefreshToken()
+
+    await nextTick()
+    scrollToBottom()
+  } catch (error) {
+    console.error('发送私信失败:', error)
+    messageManager.error(error.message || '发送失败，请稍后重试')
+  } finally {
+    sending.value = false
+  }
+}
+
+const startMessagePolling = () => {
+  if (messagePollTimer) {
+    window.clearInterval(messagePollTimer)
+  }
+
+  messagePollTimer = window.setInterval(async () => {
+    if (loading.value || sending.value || !chatUser.value.id) return
+
+    try {
+      await loadMessages({ silent: true })
+    } catch (error) {
+      console.error('轮询私信失败:', error)
+    }
+  }, MESSAGE_POLL_INTERVAL)
+}
+
+const goBack = () => {
+  router.back()
+}
+
+watch(
+  () => messages.value.length,
+  async () => {
+    await nextTick()
+    scrollToBottom()
+  }
+)
+
+watch(
+  () => route.params.userId,
+  async (newUserId, oldUserId) => {
+    if (newUserId && newUserId !== oldUserId) {
+      await initializeChat()
+    }
+  }
+)
+
+onMounted(async () => {
+  await initializeChat()
+  startMessagePolling()
+
+  timeRefreshTimer = window.setInterval(() => {
+    touchTimeRefreshToken()
+  }, TEN_MINUTES)
 })
 
-onMounted(() => {
-  loadChatUser()
-  loadMessages()
-  scrollToBottom()
+onUnmounted(() => {
+  if (timeRefreshTimer) {
+    window.clearInterval(timeRefreshTimer)
+  }
+  if (messagePollTimer) {
+    window.clearInterval(messagePollTimer)
+  }
 })
 </script>
 
@@ -257,231 +380,187 @@ onMounted(() => {
   padding-top: 72px;
 }
 
-/* 顶部导航栏 */
 .chat-header {
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 700px;
+  height: 60px;
+  background: var(--bg-color-primary);
+  border-bottom: 1px solid var(--bg-color-secondary);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--bg-color-primary);
-  border-bottom: 1px solid var(--border-color-primary);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  height: 48px;
+  padding: 0 16px;
+  z-index: 20;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.back-btn {
+.back-btn,
+.toolbar-btn,
+.send-btn {
+  border: none;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: none;
-  background: transparent;
-  color: var(--text-color-primary);
   cursor: pointer;
-  border-radius: 50%;
-  transition: background-color 0.2s ease;
+  color: var(--text-color-primary);
+}
+.send-btn span {
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
 }
 
-.back-btn:hover {
-  background: var(--bg-color-secondary);
+.back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
 }
 
 .chat-user-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  min-width: 0;
 }
 
-.chat-avatar {
+.chat-avatar,
+.msg-avatar {
   width: 36px;
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .chat-nickname {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-color-primary);
 }
 
 .header-placeholder {
-  width: 40px;
+  width: 36px;
+  flex-shrink: 0;
 }
 
-/* 消息列表 */
 .message-list {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  padding: 76px 16px 20px;
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .message-item {
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.time-divider {
+  width: fit-content;
+  margin: 0 auto 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--bg-color-secondary);
+  color: var(--text-color-tertiary);
+  font-size: 12px;
 }
 
 .message-content-wrapper {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  max-width: 80%;
+  gap: 10px;
+  align-items: flex-end;
 }
 
 .message-self .message-content-wrapper {
   flex-direction: row-reverse;
-  align-self: flex-end;
-}
-
-.message-other .message-content-wrapper {
-  align-self: flex-start;
-}
-
-.msg-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
 }
 
 .message-bubble {
+  max-width: min(72%, 460px);
   padding: 10px 14px;
-  border-radius: 16px;
-  word-break: break-word;
-  line-height: 1.5;
+  border-radius: 18px;
+  background: var(--bg-color-secondary);
+  color: var(--text-color-primary);
 }
 
 .message-self .message-bubble {
   background: var(--primary-color);
-  color: white;
-  border-bottom-right-radius: 4px;
-}
-
-.message-other .message-bubble {
-  background: var(--bg-color-secondary);
-  color: var(--text-color-primary);
-  border-bottom-left-radius: 4px;
+  color: #fff;
 }
 
 .message-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
   font-size: 14px;
 }
 
-/* 时间分隔线 */
-.time-divider {
-  text-align: center;
-  color: var(--text-color-quaternary);
-  font-size: 12px;
-  padding: 8px 0;
-  margin: 4px 0;
-}
-
-/* 空状态 */
 .empty-state {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 1;
-  color: var(--text-color-quaternary);
   gap: 12px;
+  color: var(--text-color-tertiary);
 }
 
-.empty-state p {
-  font-size: 14px;
-}
-
-/* 底部输入区域 */
 .chat-input-area {
+  position: sticky;
+  bottom: 0;
   background: var(--bg-color-primary);
-  border-top: 1px solid var(--border-color-primary);
-  padding: 8px 16px;
-  position: relative;
+  border-top: 1px solid var(--bg-color-secondary);
+  padding: 10px 16px 14px;
+  z-index: 10;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .input-toolbar {
   display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.toolbar-btn {
-  display: flex;
   align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: none;
-  background: transparent;
-  color: var(--text-color-secondary);
-  cursor: pointer;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-}
-
-.toolbar-btn:hover {
-  background: var(--bg-color-secondary);
-  color: var(--text-color-primary);
+  gap: 8px;
+  max-width: 700px;
+  margin: 0 auto 8px;
 }
 
 .input-wrapper {
+  max-width: 700px;
+  margin: 0 auto;
   display: flex;
   align-items: flex-end;
-  gap: 8px;
+  gap: 10px;
 }
 
 :deep(.chat-input) {
-  flex: 1;
-  min-height: 40px;
+  min-height: 22px;
   max-height: 120px;
-  padding: 10px 14px;
-  border: 1px solid var(--border-color-primary);
-  border-radius: 20px;
-  background: var(--bg-color-secondary);
-  color: var(--text-color-primary);
-  font-size: 14px;
-  line-height: 1.5;
   overflow-y: auto;
-  outline: none;
-  word-break: break-word;
-}
-
-:deep(.chat-input:focus) {
-  border-color: var(--primary-color);
-}
-
-:deep(.chat-input:empty:before) {
-  content: attr(placeholder);
-  color: var(--text-color-quaternary);
-  pointer-events: none;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: var(--bg-color-secondary);
 }
 
 .send-btn {
-  display: flex;
+  min-width: 72px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--primary-color);
+  color: #fff;
+  flex-shrink: 0;
+  align-self: center;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: none;
-  background: var(--primary-color);
-  color: white;
-  cursor: pointer;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.send-btn:hover:not(:disabled) {
-  background: var(--primary-color-dark);
+  gap: 6px;
+  padding: 0 14px;
+  line-height: 1;
 }
 
 .send-btn:disabled {
@@ -489,40 +568,33 @@ onMounted(() => {
   cursor: not-allowed;
 }
 
-/* Emoji 面板 */
 .emoji-panel-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  position: absolute;
+  right: 16px;
+  bottom: 74px;
+  z-index: 30;
 }
 
 .emoji-panel {
   background: var(--bg-color-primary);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--bg-color-secondary);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   overflow: hidden;
-  position: absolute;
-  bottom: 80px;
-  left: 16px;
 }
 
-/* 响应式 */
-@media (min-width: 901px) {
-  .chat-page {
-    max-width: 700px;
-    margin: 0 auto;
+@media (max-width: 768px) {
+  .chat-header {
+    top: 0;
+    max-width: none;
   }
 
-  .chat-header {
-    max-width: 700px;
-    margin: 0 auto;
+  .chat-page {
+    padding-top: 60px;
+  }
+
+  .message-list {
+    padding-top: 72px;
   }
 }
 </style>

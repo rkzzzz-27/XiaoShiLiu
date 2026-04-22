@@ -1,0 +1,51 @@
+----- 2026-04-22 11:48:33 - npm start -----
+[dotenv@17.2.2] injecting env (40) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+● 自动解封功能已启用，每 1 分钟检查一次
+● 服务器运行在端口 3001
+● 环境: development
+获取笔记评论列表 - 笔记ID: 2, 页码: 1, 每页: 5, 排序: desc, 当前用户ID: null
+用户登录成功 - 用户ID: 1, 小石榴号: rkzzzz0727
+用户登录成功 - 用户ID: 2, 小石榴号: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取笔记评论列表 - 笔记ID: 1, 页码: 1, 每页: 5, 排序: desc, 当前用户ID: 2
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取互关列表 - 用户ID: rkzzzz0727, 当前用户ID: 2
+获取互关列表 - 用户ID: rkzzzz0727, 当前用户ID: 2
+获取粉丝列表 - 用户ID: rkzzzz0727, 当前用户ID: 2
+获取粉丝列表 - 用户ID: rkzzzz0727, 当前用户ID: 2
+获取互关列表 - 用户ID: rkzzzz0727, 当前用户ID: 2
+用户更新资料 - 目标用户ID: rkzzzz07277, 当前用户ID: 2
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取粉丝列表 - 用户ID: rkzzzz07277, 当前用户ID: 2
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取粉丝列表 - 用户ID: rkzzzz0727, 当前用户ID: 2
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取互关列表 - 用户ID: rkzzzz0727, 当前用户ID: 2
+获取互关列表 - 用户ID: rkzzzz0727, 当前用户ID: 2
+获取粉丝列表 - 用户ID: rkzzzz0727, 当前用户ID: 2
+获取用户统计信息 - 用户ID: rkzzzz07277
+用户更新资料 - 目标用户ID: rkzzzz0727, 当前用户ID: 2
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取粉丝列表 - 用户ID: rkzzzz07277, 当前用户ID: 2
+获取用户统计信息 - 用户ID: rkzzzz07277
+用户登录成功 - 用户ID: 1, 小石榴号: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz0727

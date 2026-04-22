@@ -64,33 +64,72 @@ router.get('/videos/:filename', async (req, res) => {
       });
     }
 
-    res.setHeader('Content-Type', result.contentType);
-    res.setHeader('Content-Length', result.fileSize);
-    res.setHeader('Cache-Control', 'public, max-age=31536000');
+    const range = req.headers.range;
+    const fileSize = result.fileSize;
 
-    const fileStream = fs.createReadStream(result.filePath);
-    fileStream.pipe(res);
+    // 支持 Range 请求以便视频可在线播放和跳转
+    let fileStream;
+    try {
+      if (range) {
+        const parts = range.replace(/bytes=/, '').split('-');
+        const start = parseInt(parts[0], 10) || 0;
+        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
 
-    fileStream.on('error', (err) => {
-      console.error('文件读取错误:', err);
-      if (!res.headersSent) {
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-          code: RESPONSE_CODES.ERROR,
-          message: '文件读取失败'
+        if (start >= fileSize || end >= fileSize) {
+          res.status(416).setHeader('Content-Range', `bytes */${fileSize}`);
+          return res.end();
+        }
+
+        const chunkSize = (end - start) + 1;
+
+        res.writeHead(206, {
+          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+          'Accept-Ranges': 'bytes',
+          'Content-Length': chunkSize,
+          'Content-Type': result.contentType,
+          'Cache-Control': 'public, max-age=31536000'
         });
+
+        fileStream = fs.createReadStream(result.filePath, { start, end });
+        fileStream.pipe(res);
       } else {
-        res.destroy(err);
+        res.setHeader('Content-Type', result.contentType);
+        res.setHeader('Content-Length', fileSize);
+        res.setHeader('Cache-Control', 'public, max-age=31536000');
+
+        fileStream = fs.createReadStream(result.filePath);
+        fileStream.pipe(res);
       }
-      fileStream.destroy();
-    });
+    } catch (err) {
+      console.error('创建文件流失败:', err);
+      if (!res.headersSent) {
+        return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ code: RESPONSE_CODES.ERROR, message: '文件读取失败' });
+      }
+      return res.end();
+    }
 
-    fileStream.on('close', () => {
-      fileStream.destroy();
-    });
+    if (fileStream) {
+      fileStream.on('error', (err) => {
+        console.error('文件读取错误:', err);
+        if (!res.headersSent) {
+          res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+            code: RESPONSE_CODES.ERROR,
+            message: '文件读取失败'
+          });
+        } else {
+          try { res.destroy(err); } catch (e) { }
+        }
+        try { fileStream.destroy(); } catch (e) { }
+      });
 
-    res.on('close', () => {
-      fileStream.destroy();
-    });
+      fileStream.on('close', () => {
+        try { fileStream.destroy(); } catch (e) { }
+      });
+
+      res.on('close', () => {
+        try { fileStream.destroy(); } catch (e) { }
+      });
+    }
   } catch (error) {
     console.error('视频访问错误:', error);
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({

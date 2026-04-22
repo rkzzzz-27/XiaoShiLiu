@@ -31,7 +31,8 @@ const props = defineProps({
       comments: 0,
       likes: 0,
       collections: 0,
-      follows: 0
+      follows: 0,
+      messages: 0
     })
   }
 })

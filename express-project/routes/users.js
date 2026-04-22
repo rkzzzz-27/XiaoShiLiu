@@ -6,6 +6,26 @@ const { optionalAuth, authenticateToken } = require('../middleware/auth');
 const NotificationHelper = require('../utils/notificationHelper');
 const { sanitizeContent } = require('../utils/contentSecurity');
 
+async function assertFollowListAccessible(targetUserId, currentUserId) {
+  const [rows] = await pool.execute(
+    'SELECT id, follow_list_public FROM users WHERE id = ?',
+    [targetUserId.toString()]
+  );
+
+  if (rows.length === 0) {
+    return { ok: false, status: HTTP_STATUS.NOT_FOUND, message: '用户不存在' };
+  }
+
+  const targetUser = rows[0];
+  const isSelf = currentUserId && currentUserId.toString() === targetUser.id.toString();
+
+  if (!isSelf && Number(targetUser.follow_list_public) !== 1) {
+    return { ok: false, status: HTTP_STATUS.FORBIDDEN, message: '该用户已关闭关注与粉丝列表' };
+  }
+
+  return { ok: true };
+}
+
 // 搜索用户（必须放在 /:id 之前）
 router.get('/search', optionalAuth, async (req, res) => {
   try {
@@ -21,7 +41,7 @@ router.get('/search', optionalAuth, async (req, res) => {
 
     // 搜索用户：支持昵称和小石榴号搜索
     const [rows] = await pool.execute(
-      `SELECT u.id, u.user_id, u.nickname, u.avatar, u.bio, u.location, u.follow_count, u.fans_count, u.like_count, u.created_at, u.verified,
+      `SELECT u.id, u.user_id, u.nickname, u.avatar, u.bio, u.location, u.follow_count, u.fans_count, u.follow_list_public, u.like_count, u.created_at, u.verified,
               (SELECT COUNT(*) FROM posts WHERE user_id = u.id AND status = 0) as post_count
        FROM users u
        WHERE u.nickname LIKE ? OR u.user_id LIKE ? 
@@ -153,7 +173,7 @@ router.get('/:id', async (req, res) => {
     const userIdParam = req.params.id;
     // 只通过小石榴号(user_id)进行查找
     const [rows] = await pool.execute(
-      `SELECT u.id, u.user_id, u.nickname, u.avatar, u.bio, u.location, u.email, u.gender, u.zodiac_sign, u.mbti, u.education, u.major, u.interests, u.follow_count, u.fans_count, u.like_count, u.created_at, u.verified, uv.title as verified_title
+      `SELECT u.id, u.user_id, u.nickname, u.avatar, u.bio, u.location, u.email, u.gender, u.zodiac_sign, u.mbti, u.education, u.major, u.interests, u.follow_count, u.fans_count, u.follow_list_public, u.like_count, u.created_at, u.verified, uv.title as verified_title
        FROM users u
        LEFT JOIN user_verification uv ON u.id = uv.user_id AND uv.status = 1
        WHERE u.user_id = ?`,
@@ -818,6 +838,11 @@ router.get('/:id/following', optionalAuth, async (req, res) => {
     }
     const userId = userRows[0].id;
 
+    const accessCheck = await assertFollowListAccessible(userId, currentUserId);
+    if (!accessCheck.ok) {
+      return res.status(accessCheck.status).json({ code: RESPONSE_CODES.FORBIDDEN, message: accessCheck.message });
+    }
+
     // 查询所有关注的用户（包括互相关注）
     const [rows] = await pool.execute(
       `SELECT u.id, u.user_id, u.nickname, u.avatar, u.bio, u.location, u.follow_count, u.fans_count, u.like_count, u.created_at, u.verified,
@@ -921,6 +946,11 @@ router.get('/:id/followers', optionalAuth, async (req, res) => {
     }
     const userId = userRows[0].id;
 
+    const accessCheck = await assertFollowListAccessible(userId, currentUserId);
+    if (!accessCheck.ok) {
+      return res.status(accessCheck.status).json({ code: RESPONSE_CODES.FORBIDDEN, message: accessCheck.message });
+    }
+
     const [rows] = await pool.execute(
       `SELECT u.id, u.user_id, u.nickname, u.avatar, u.bio, u.location, u.follow_count, u.fans_count, u.like_count, u.created_at, u.verified,
               f.created_at as followed_at,
@@ -1017,6 +1047,11 @@ router.get('/:id/mutual-follows', optionalAuth, async (req, res) => {
       return res.status(HTTP_STATUS.NOT_FOUND).json({ code: RESPONSE_CODES.NOT_FOUND, message: '用户不存在' });
     }
     const userId = userRows[0].id;
+
+    const accessCheck = await assertFollowListAccessible(userId, currentUserId);
+    if (!accessCheck.ok) {
+      return res.status(accessCheck.status).json({ code: RESPONSE_CODES.FORBIDDEN, message: accessCheck.message });
+    }
 
     // 查询互关用户
     const [rows] = await pool.execute(
@@ -1183,7 +1218,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const userIdParam = req.params.id;
     const currentUserId = req.user.id;
-    const { nickname, avatar, bio, location, gender, zodiac_sign, mbti, education, major, interests } = req.body;
+    const { nickname, avatar, bio, location, gender, zodiac_sign, mbti, education, major, interests, follow_list_public } = req.body;
 
     console.log(`用户更新资料 - 目标用户ID: ${userIdParam}, 当前用户ID: ${currentUserId}`);
 
@@ -1258,6 +1293,11 @@ router.put('/:id', authenticateToken, async (req, res) => {
       updateValues.push(processedInterests);
     }
 
+    if (follow_list_public !== undefined) {
+      updateFields.push('follow_list_public = ?');
+      updateValues.push(follow_list_public ? 1 : 0);
+    }
+
     updateValues.push(targetUserId);
 
     // 更新用户资料
@@ -1268,7 +1308,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
     // 获取更新后的用户信息
     const [updatedUser] = await pool.execute(
-      'SELECT id, user_id, nickname, avatar, bio, location, email, gender, zodiac_sign, mbti, education, major, interests, follow_count, fans_count, like_count FROM users WHERE id = ?',
+      'SELECT id, user_id, nickname, avatar, bio, location, email, gender, zodiac_sign, mbti, education, major, interests, follow_count, fans_count, follow_list_public, like_count FROM users WHERE id = ?',
       [targetUserId.toString()]
     );
 

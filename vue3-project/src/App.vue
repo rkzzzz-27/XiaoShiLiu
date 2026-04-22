@@ -3,7 +3,6 @@ import { RouterView } from 'vue-router'
 import { onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useAuthStore } from '@/stores/auth'
-import { useAboutStore } from '@/stores/about'
 import { useChangePasswordStore } from '@/stores/changePassword'
 import { useKeyboardShortcutsStore } from '@/stores/keyboardShortcuts'
 import { useAccountSecurityStore } from '@/stores/accountSecurity'
@@ -11,7 +10,6 @@ import { useSettingsStore } from '@/stores/settings'
 import { useVerifiedStore } from '@/stores/verified'
 import AuthModal from '@/components/modals/AuthModal.vue'
 import ResetPasswordModal from '@/components/modals/ResetPasswordModal.vue'
-import AboutModal from '@/components/modals/AboutModal.vue'
 import ChangePasswordModal from '@/components/modals/ChangePasswordModal.vue'
 import KeyboardShortcutsModal from '@/components/modals/KeyboardShortcutsModal.vue'
 import AccountSecurityModal from '@/components/modals/AccountSecurityModal.vue'
@@ -22,7 +20,7 @@ import { useConfirm } from '@/views/admin/composables/useConfirm'
 
 const userStore = useUserStore()
 const authStore = useAuthStore()
-const aboutStore = useAboutStore()
+ 
 const changePasswordStore = useChangePasswordStore()
 const keyboardShortcutsStore = useKeyboardShortcutsStore()
 const accountSecurityStore = useAccountSecurityStore()
@@ -98,9 +96,9 @@ const restoreThemeColor = () => {
   else{
   // 设置默认主题色
     const root = document.documentElement
-    root.style.setProperty('--primary-color', '#ff2442')
-    root.style.setProperty('--primary-color-dark', '#b31f35')
-    root.style.setProperty('--primary-color-shadow', 'rgba(254, 40, 67, 0.3)')
+    root.style.setProperty('--primary-color', '#FFD700')
+    root.style.setProperty('--primary-color-dark', '#CCAC00')
+    root.style.setProperty('--primary-color-shadow', 'rgba(204, 172, 0, 0.3)')
   }
 }
 
@@ -118,7 +116,7 @@ onMounted(() => {
       @success="authStore.closeAuthModal" @open-reset-password="openResetPassword" />
     <ResetPasswordModal v-if="showResetPasswordModal" @close="closeResetPassword"
       @back-to-login="backToLoginFromReset" />
-    <AboutModal v-if="aboutStore.showAboutModal" @close="aboutStore.closeAboutModal" />
+    
     <ChangePasswordModal v-if="changePasswordStore.showChangePasswordModal" :userInfo="userStore.userInfo"
       @close="changePasswordStore.closeChangePasswordModal" />
     <KeyboardShortcutsModal v-if="keyboardShortcutsStore.showKeyboardShortcutsModal"

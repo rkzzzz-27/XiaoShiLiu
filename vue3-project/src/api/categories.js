@@ -15,6 +15,32 @@ export async function getCategories(params = {}) {
   }
 }
 
+export async function getCategoryUnreadStatus() {
+  try {
+    return await request.get('/categories/read-status')
+  } catch (error) {
+    console.error('获取分类未读状态失败:', error)
+    return {
+      success: false,
+      data: [],
+      message: error.message || '获取分类未读状态失败'
+    }
+  }
+}
+
+export async function markCategoryAsRead(categoryId) {
+  try {
+    return await request.put(`/categories/${categoryId}/read`)
+  } catch (error) {
+    console.error('更新分类已读状态失败:', error)
+    return {
+      success: false,
+      data: null,
+      message: error.message || '更新分类已读状态失败'
+    }
+  }
+}
+
 // 获取分类详情（管理员功能）
 export async function getCategoryDetail(categoryId) {
   try {

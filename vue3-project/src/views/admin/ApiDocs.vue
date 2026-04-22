@@ -249,7 +249,7 @@ const apiGroups = ref([
         description: '用户注册接口，支持IP属地自动获取',
         expanded: false,
         params: [
-          { name: 'user_id', type: 'string', required: true, description: '小石榴号（3-15位，字母数字下划线）' },
+          { name: 'user_id', type: 'string', required: true, description: '碎锦号（3-15位，字母数字下划线）' },
           { name: 'nickname', type: 'string', required: true, description: '昵称（2-10位）' },
           { name: 'password', type: 'string', required: true, description: '密码（6-20位）' },
           { name: 'avatar', type: 'string', required: false, description: '头像URL' },
@@ -284,7 +284,7 @@ const apiGroups = ref([
         description: '用户登录接口，返回JWT令牌',
         expanded: false,
         params: [
-          { name: 'user_display_id', type: 'string', required: true, description: '小石榴号' },
+          { name: 'user_display_id', type: 'string', required: true, description: '碎锦号' },
           { name: 'password', type: 'string', required: true, description: '密码' }
         ],
         example: `{
@@ -487,7 +487,7 @@ const apiGroups = ref([
         method: 'GET',
         path: '/api/users/search',
         title: '搜索用户',
-        description: '根据关键词搜索用户（昵称或小石榴号）',
+        description: '根据关键词搜索用户（昵称或碎锦号）',
         expanded: false,
         params: [
           { name: 'keyword', type: 'string', required: true, description: '搜索关键词' },
@@ -499,10 +499,10 @@ const apiGroups = ref([
         method: 'GET',
         path: '/api/users/:id',
         title: '获取用户详情',
-        description: '根据小石榴号获取用户详细信息',
+        description: '根据碎锦号获取用户详细信息',
         expanded: false,
         params: [
-          { name: 'id', type: 'string', required: true, description: '小石榴号' }
+          { name: 'id', type: 'string', required: true, description: '碎锦号' }
         ]
       },
       {
@@ -512,7 +512,7 @@ const apiGroups = ref([
         description: '获取指定用户发布的笔记列表，支持状态筛选',
         expanded: false,
         params: [
-          { name: 'id', type: 'string', required: true, description: '小石榴号' },
+          { name: 'id', type: 'string', required: true, description: '碎锦号' },
           { name: 'page', type: 'int', required: false, description: '页码，默认1' },
           { name: 'limit', type: 'int', required: false, description: '每页数量，默认20' },
           { name: 'status', type: 'string', required: false, description: '状态筛选，all=已发布和待审核，不传则只查询已发布' }
@@ -525,7 +525,7 @@ const apiGroups = ref([
         description: '获取指定用户收藏的笔记列表',
         expanded: false,
         params: [
-          { name: 'id', type: 'string', required: true, description: '小石榴号' },
+          { name: 'id', type: 'string', required: true, description: '碎锦号' },
           { name: 'page', type: 'int', required: false, description: '页码，默认1' },
           { name: 'limit', type: 'int', required: false, description: '每页数量，默认20' }
         ]
@@ -537,7 +537,7 @@ const apiGroups = ref([
         description: '获取指定用户点赞的笔记列表',
         expanded: false,
         params: [
-          { name: 'id', type: 'string', required: true, description: '小石榴号' },
+          { name: 'id', type: 'string', required: true, description: '碎锦号' },
           { name: 'page', type: 'int', required: false, description: '页码，默认1' },
           { name: 'limit', type: 'int', required: false, description: '每页数量，默认20' }
         ]

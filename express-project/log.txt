@@ -49,3 +49,152 @@
 获取用户统计信息 - 用户ID: rkzzzz0727
 获取用户统计信息 - 用户ID: rkzzzz07277
 获取用户统计信息 - 用户ID: rkzzzz0727
+获取笔记评论列表 - 笔记ID: 2, 页码: 1, 每页: 5, 排序: desc, 当前用户ID: 2
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取粉丝列表 - 用户ID: rkzzzz07277, 当前用户ID: 2
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取粉丝列表 - 用户ID: rkzzzz07277, 当前用户ID: 2
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取笔记评论列表 - 笔记ID: 2, 页码: 1, 每页: 5, 排序: desc, 当前用户ID: 2
+获取笔记评论列表 - 笔记ID: 2, 页码: 1, 每页: 5, 排序: desc, 当前用户ID: 2
+获取笔记评论列表 - 笔记ID: 2, 页码: 1, 每页: 5, 排序: desc, 当前用户ID: 2
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+用户退出成功 - 用户ID: 2
+用户登录成功 - 用户ID: 2, 小石榴号: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+图床响应数据: {
+  errno: 0,
+  error: '',
+  data: {
+    url: 'https://ps.ssl.qhimg.com/t02992f5f7b19df91e9.jpg',
+    imgFile: 'æ\x88ªå±\x8F2026-03-19 20.57.14.png'
+  }
+}
+单图片上传成功 - 用户ID: 2, 文件名: æªå±2026-03-19 20.57.14.png
+=== 创建笔记请求 ===
+用户ID: 2
+标题: 1
+内容长度: 1
+分类ID: 1
+发布类型: 1
+笔记状态: 0
+图片数量: 1
+视频数据: null
+标签: []
+📝 开始插入笔记到数据库...
+✅ 笔记插入成功，ID: 3
+✅ 创建笔记成功 - 用户ID: 2, 笔记ID: 3, 类型: 1
+----- 2026-04-22 15:23:20 - npm start -----
+[dotenv@17.2.2] injecting env (40) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+● 自动解封功能已启用，每 1 分钟检查一次
+● 服务器运行在端口 3001
+● 环境: development
+Token验证失败: Error: Invalid token
+    at verifyToken (/Users/kk/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/Users/kk/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at router.handle (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+Token验证失败: Error: Invalid token
+    at verifyToken (/Users/kk/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/Users/kk/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at router.handle (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+Token验证失败: Error: Invalid token
+    at verifyToken (/Users/kk/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/Users/kk/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at router.handle (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+用户登录成功 - 用户ID: 1, 小石榴号: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+用户退出成功 - 用户ID: 1
+用户登录成功 - 用户ID: 2, 小石榴号: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取粉丝列表 - 用户ID: rkzzzz07277, 当前用户ID: 2
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz07277
+Token验证失败: Error: Invalid token
+    at verifyToken (/Users/kk/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/Users/kk/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at router.handle (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+获取用户统计信息 - 用户ID: rkzzzz0727
+Token验证失败: Error: Invalid token
+    at verifyToken (/Users/kk/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/Users/kk/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:280:10)
+    at router.handle (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:175:3)
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz0727
+用户登录成功 - 用户ID: 2, 小石榴号: rkzzzz07277
+用户登录成功 - 用户ID: 1, 小石榴号: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz07277
+获取用户统计信息 - 用户ID: rkzzzz07277
+用户退出成功 - 用户ID: 2
+----- 2026-04-22 15:36:59 - npm start -----
+[dotenv@17.2.2] injecting env (40) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+● 自动解封功能已启用，每 1 分钟检查一次
+● 服务器运行在端口 3001
+● 环境: development
+Token验证失败: Error: Invalid token
+    at verifyToken (/Users/kk/XiaoShiLiu/express-project/utils/jwt.js:34:11)
+    at authenticateToken (/Users/kk/XiaoShiLiu/express-project/middleware/auth.js:20:21)
+    at Layer.handle [as handle_request] (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:284:15
+    at param (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:365:14)
+    at param (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:376:14)
+    at router.process_params (/Users/kk/XiaoShiLiu/express-project/node_modules/express/lib/router/index.js:421:3)
+用户登录成功 - 用户ID: 1, 小石榴号: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+用户注册成功 - 用户ID: 3, 小石榴号: rkzzzz072777
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取用户统计信息 - 用户ID: rkzzzz0727
+获取笔记评论列表 - 笔记ID: 2, 页码: 1, 每页: 5, 排序: desc, 当前用户ID: 1

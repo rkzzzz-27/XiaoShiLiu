@@ -12,7 +12,7 @@ const route = useRoute()
 const searchHistoryStore = useSearchHistoryStore()
 
 // 静态资源URL
-const logoUrl = new URL('@/assets/imgs/小石榴.png', import.meta.url).href
+const logoUrl = new URL('@/assets/imgs/碎锦.png', import.meta.url).href
 
 const isLargeScreen = ref(window.innerWidth > 695)
 const showSidebar = ref(window.innerWidth > 960)
@@ -174,13 +174,13 @@ onUnmounted(() => {
     <header>
         <div class="header-container">
             <template v-if="displaySearch">
-                <div v-if="isLargeScreen" class="logo" @click="router.push('/')">
-                    <img :src="logoUrl" alt="小石榴" />
-                </div>
+                
+                    <img :src="logoUrl" alt="碎锦" />
+                
                 <div class="search-row" :class="{ 'large-screen': isLargeScreen, 'small-screen': !isLargeScreen }">
                     <div class="search-bar-container">
                         <div class="search-bar">
-                            <input v-model="searchText" type="text" placeholder="搜索小石榴" @keypress="handleKeyPress"
+                            <input v-model="searchText" type="text" placeholder="搜索好朋友" @keypress="handleKeyPress"
                                 @focus="handleSearchFocus" @blur="handleSearchBlur" />
                             <div class="input-controls">
                                 <div class="clear-btn" @click="clearInput"
@@ -215,7 +215,7 @@ onUnmounted(() => {
 
             <template v-else>
                 <div class="logo" @click="router.push('/')">
-                    <img :src="logoUrl" alt="小石榴" />
+                    <img :src="logoUrl" alt="碎锦" />
                 </div>
                 <div class="header-right">
                     <div @click="openSearch" class="circle-btn">
@@ -271,6 +271,15 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* 当 logo 容器内部是原生 img 元素时，去掉容器背景与圆角，直接以 img 显示 */
+.logo img {
+    background: transparent;
+    border-radius: 0;
+    display: block;
+    width: 68.32px;
+    height: 32px;
 }
 
 img {

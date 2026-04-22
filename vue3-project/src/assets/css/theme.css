@@ -1,8 +1,8 @@
 :root {
   /* 主题色 */
-  --primary-color: #ff2442;
-  --primary-color-dark: #b31f35;
-  --primary-color-shadow: rgba(254, 40, 67, 0.3);
+  --primary-color: #ffd700;
+  --primary-color-dark: #ccac00;
+  --primary-color-shadow: rgba(204, 172, 0, 0.3);
   /* 文本颜色 */
   --text-color-primary: #333;
   --text-color-secondary: #5c5c5c;
@@ -41,9 +41,9 @@
 /* 深色主题 */
 [data-theme="dark"] {
   /* 主题色 */
-  --primary-color: #ff2442;
-  --primary-color-dark: #b31f35;
-  --primary-color-shadow: rgba(254, 40, 67, 0.3);
+  --primary-color: #ffd700;
+  --primary-color-dark: #ccac00;
+  --primary-color-shadow: rgba(204, 172, 0, 0.3);
 
   /* 文本颜色 */
   --text-color-primary: #e0e0e0;

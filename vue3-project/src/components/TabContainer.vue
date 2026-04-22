@@ -140,6 +140,7 @@ onUnmounted(() => {
         <div v-for="(item, index) in tabs" :key="item.id" :id="item.id" :class="{ active: activeId === item.id }"
             class="tab-item" @click="tabSelected(item)" ref="tabItems">
             {{ item.label }}
+            <span v-if="item.hasUnread" class="tab-unread-dot"></span>
         </div>
         <div class="tab-slider" :style="{
             left: sliderLeft + 'px',
@@ -218,6 +219,17 @@ onUnmounted(() => {
     font-weight: bold;
     background: transparent;
     transition: color 0.2s ease;
+}
+
+.tab-unread-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff3b30;
+    box-shadow: 0 0 0 2px var(--bg-color-primary);
 }
 
 /* 滑块指示器 */

@@ -283,7 +283,7 @@ onMounted(async () => {
             <VerifiedBadge :verified="userInfo?.verified" size="large" />
           </div>
           <div class="user-content">
-            <div class="user-id text-ellipsis">小石榴号：{{ userInfo?.user_id || '' }}</div>
+            <div class="user-id text-ellipsis">碎锦号：{{ userInfo?.user_id || '' }}</div>
             <div class="user-IP text-ellipsis">IP属地：{{ userInfo?.location || '未知' }}</div>
           </div>
         </div>

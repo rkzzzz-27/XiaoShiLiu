@@ -1,5 +1,5 @@
 /**
- * 小石榴校园图文社区 - Express后端服务
+ * 碎锦校园图文社区 - Express后端服务
  * 
  * @author ZTMYO
  * @github https://github.com/ZTMYO
@@ -37,7 +37,7 @@ const app = express();
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 500,
+  max: 2000,
   standardHeaders: true,
   legacyHeaders: false
 });

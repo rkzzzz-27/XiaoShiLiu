@@ -607,7 +607,7 @@ const handlePublish = async () => {
       tags: form.tags,
       category_id: form.category_id,
       type: uploadType.value === 'image' ? 1 : 2, // 1: 图文, 2: 视频
-      status: 2 // 发布状态：2=待审核
+      status: 0 // 发布状态：0=已发布
     }
 
 

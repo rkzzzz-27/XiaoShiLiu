@@ -591,7 +591,7 @@ router.post('/register', async (req, res) => {
 
     // 保存会话
     await pool.execute(
-      'INSERT INTO user_sessions (user_id, token, refresh_token, expires_at, user_agent, is_active) VALUES (?, ?, ?, DATE_ADD(NOW(), INTERVAL 7 DAY), ?, 1)',
+      'INSERT INTO user_sessions (user_id, token, refresh_token, expires_at, user_agent, is_active) VALUES (?, ?, ?, DATE_ADD(NOW(), INTERVAL 30 DAY), ?, 1)',
       [userId.toString(), accessToken, refreshToken, userAgent]
     );
 
@@ -611,7 +611,7 @@ router.post('/register', async (req, res) => {
         tokens: {
           access_token: accessToken,
           refresh_token: refreshToken,
-          expires_in: 3600
+          expires_in: 2592000
         }
       }
     });
@@ -673,7 +673,7 @@ router.post('/login', async (req, res) => {
     // 清除旧会话并保存新会话
     await pool.execute('UPDATE user_sessions SET is_active = 0 WHERE user_id = ?', [user.id.toString()]);
     await pool.execute(
-      'INSERT INTO user_sessions (user_id, token, refresh_token, expires_at, user_agent, is_active) VALUES (?, ?, ?, DATE_ADD(NOW(), INTERVAL 7 DAY), ?, 1)',
+      'INSERT INTO user_sessions (user_id, token, refresh_token, expires_at, user_agent, is_active) VALUES (?, ?, ?, DATE_ADD(NOW(), INTERVAL 30 DAY), ?, 1)',
       [user.id.toString(), accessToken, refreshToken, userAgent]
     );
 
@@ -704,7 +704,7 @@ router.post('/login', async (req, res) => {
         tokens: {
           access_token: accessToken,
           refresh_token: refreshToken,
-          expires_in: 3600
+          expires_in: 2592000
         }
       }
     });
@@ -753,7 +753,7 @@ router.post('/refresh', async (req, res) => {
 
     // 更新会话
     await pool.execute(
-      'UPDATE user_sessions SET token = ?, refresh_token = ?, expires_at = DATE_ADD(NOW(), INTERVAL 7 DAY), user_agent = ? WHERE id = ?',
+      'UPDATE user_sessions SET token = ?, refresh_token = ?, expires_at = DATE_ADD(NOW(), INTERVAL 30 DAY), user_agent = ? WHERE id = ?',
       [newAccessToken, newRefreshToken, userAgent, sessionRows[0].id.toString()]
     );
 
@@ -763,7 +763,7 @@ router.post('/refresh', async (req, res) => {
       data: {
         access_token: newAccessToken,
         refresh_token: newRefreshToken,
-        expires_in: 3600
+        expires_in: 2592000
       }
     });
   } catch (error) {

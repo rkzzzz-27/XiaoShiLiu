@@ -1,11 +1,12 @@
 <script setup>
 import router from '@/router'
 import TabContainer from '@/components/TabContainer.vue'
-import { onMounted, watch, ref, computed } from 'vue'
+import { onMounted, watch, ref, computed, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useScroll } from '@vueuse/core'
 import { useChannelStore } from '@/stores/channel'
 import { useNavigationStore } from '@/stores/navigation'
+import { useUserStore } from '@/stores/user'
 
 // 获取当前路由
 const route = useRoute()
@@ -16,6 +17,7 @@ const { y: scrollY } = useScroll(window)
 // 使用频道 store 和导航 store
 const channelStore = useChannelStore()
 const navigationStore = useNavigationStore()
+const userStore = useUserStore()
 
 // 定义emit事件，用于触发父组件的刷新
 const emit = defineEmits(['channel-reload'])
@@ -51,7 +53,24 @@ watch(() => route.path, (newPath) => {
     // 否则根据路由更新活跃频道
     const channelId = channelStore.getChannelIdByPath(newPath)
     channelStore.setActiveChannel(channelId)
+    if (userStore.isLoggedIn) {
+        channelStore.markCategoryAsRead(channelId)
+    }
 }, { immediate: true })
+
+watch(() => userStore.isLoggedIn, (isLoggedIn) => {
+    if (isLoggedIn) {
+        channelStore.refreshUnreadIndicators()
+        channelStore.startUnreadPolling()
+        if (channelStore.activeChannelId && channelStore.activeChannelId !== 'recommend') {
+            channelStore.markCategoryAsRead(channelStore.activeChannelId)
+        }
+        return
+    }
+
+    channelStore.stopUnreadPolling()
+    channelStore.resetUnreadIndicators()
+})
 
 function handleTabChange(item) {
     // 如果切换到相同频道，不执行任何操作
@@ -85,6 +104,9 @@ function startChannelSwitch(item) {
 
     // 使用replace代替push，避免在浏览器历史记录中添加新条目
     router.replace(`/explore${item.path}`).then(() => {
+        if (userStore.isLoggedIn) {
+            channelStore.markCategoryAsRead(item.id)
+        }
 
         // 设置动画计时器（1200ms）
         animationTimer.value = setTimeout(() => {
@@ -122,14 +144,22 @@ onMounted(() => {
     const channelId = channelStore.getChannelIdByPath(route.path)
     channelStore.setActiveChannel(channelId)
     currentRequestChannelId.value = channelId
+
+    if (userStore.isLoggedIn) {
+        channelStore.markCategoryAsRead(channelId)
+        channelStore.refreshUnreadIndicators()
+        channelStore.startUnreadPolling()
+    } else {
+        channelStore.resetUnreadIndicators()
+    }
 })
 
 // 组件卸载时清理计时器
-import { onUnmounted } from 'vue'
 onUnmounted(() => {
     if (animationTimer.value) {
         clearTimeout(animationTimer.value)
     }
+    channelStore.stopUnreadPolling()
 })
 </script>
 

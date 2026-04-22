@@ -12,7 +12,7 @@
                         <h3 class="user-nickname" v-user-hover="userHoverConfig">{{ user.nickname }}</h3>
                         <VerifiedBadge :verified="user.verified" />
                     </div>
-                    <div class="user-id">小石榴号：{{ user.userId }}</div>
+                    <div class="user-id">碎锦号：{{ user.userId }}</div>
                     <div class="user-stats">
                         <span class="stat-item">粉丝 · {{ formatNumber(user.followers) }}</span>
                         <span class="stat-item">笔记 · {{ formatNumber(user.post_count) }}</span>
@@ -77,8 +77,8 @@ const isCurrentUser = computed(() => {
         return false
     }
 
-    const currentUserId = userStore.userInfo.user_id // 当前用户的小石榴号
-    const userId = props.user.user_id || props.user.userId // 用户的小石榴号
+    const currentUserId = userStore.userInfo.user_id // 当前用户的碎锦号
+    const userId = props.user.user_id || props.user.userId // 用户的碎锦号
 
     return currentUserId === userId
 })
@@ -218,12 +218,12 @@ const userHoverConfig = computed(() => ({
         return baseInfo
     },
     onFollow: (userInfo) => {
-        const userId = props.user.user_id || props.user.userId
-        handleFollow(userId) // 使用小石榴号进行关注操作
+    const userId = props.user.user_id || props.user.userId
+    handleFollow(userId) // 使用碎锦号进行关注操作
     },
     onUnfollow: (userInfo) => {
-        const userId = props.user.user_id || props.user.userId
-        handleUnfollow(userId) // 使用小石榴号进行取消关注操作
+    const userId = props.user.user_id || props.user.userId
+    handleUnfollow(userId) // 使用碎锦号进行取消关注操作
     },
     delay: 500
 }))

@@ -7,20 +7,27 @@
     
     <!-- 基础favicon -->
     <link rel="icon" type="image/x-icon" href="/logo.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="40x40" href="/favicon-40x40.png">
     <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64x64.png">
     
     <!-- iOS主屏图标 -->
+     <!-- 苹果专用 -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     
     <!-- Android主屏图标（通过Manifest） -->
+     <!-- 这个标签开启了PWA功能，浏览器会根据manifest.json中的配置来处理应用的安装和图标显示
+     例如，Android/部分ios设备会使用manifest.json中定义的图标和主题色来创建主屏幕快捷方式
+     还会根据manifest.json中的start_url和display属性来决定应用的启动方式和显示模式
+     这使得用户在移动设备上安装和使用你的应用时，能够获得类似原生应用的体验 -->
     <link rel="manifest" href="/manifest.json">
     
     <!-- 移动端Web App配置 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
+    
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
+    <!-- 这个标签设置了iOS设备上状态栏的样式为黑色，确保在用户安装应用到主屏幕后，状态栏与应用的整体设计风格一致，提升用户体验。 -->
+    <!-- 状态栏就是屏幕顶部显示时间、电池等信息的区域，通过设置这个属性，可以让状态栏的颜色与应用的主题色协调，增强视觉效果。 -->
     <!-- 移动端禁用双击放大 -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   </head>

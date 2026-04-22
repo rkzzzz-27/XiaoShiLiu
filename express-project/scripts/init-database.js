@@ -79,6 +79,9 @@ class DatabaseInitializer {
       // 创建私信消息表
       await this.createMessagesTable(connection);
 
+      // 创建分类已读状态表
+      await this.createCategoryReadStatesTable(connection);
+
       // 创建用户会话表
       await this.createUserSessionsTable(connection);
 
@@ -417,6 +420,27 @@ class DatabaseInitializer {
     `;
     await connection.execute(sql);
     console.log('✓ messages 表创建成功');
+  }
+
+  async createCategoryReadStatesTable(connection) {
+    const sql = `
+      CREATE TABLE IF NOT EXISTS \`category_read_states\` (
+        \`id\` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+        \`user_id\` bigint(20) NOT NULL COMMENT '用户ID',
+        \`category_id\` int(11) NOT NULL COMMENT '分类ID',
+        \`last_read_at\` timestamp NULL DEFAULT NULL COMMENT '最后已读时间',
+        \`created_at\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+        \`updated_at\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+        PRIMARY KEY (\`id\`),
+        UNIQUE KEY \`uk_user_category\` (\`user_id\`, \`category_id\`),
+        KEY \`idx_category_id\` (\`category_id\`),
+        KEY \`idx_last_read_at\` (\`last_read_at\`),
+        CONSTRAINT \`fk_category_read_states_user\` FOREIGN KEY (\`user_id\`) REFERENCES \`users\` (\`id\`) ON DELETE CASCADE,
+        CONSTRAINT \`fk_category_read_states_category\` FOREIGN KEY (\`category_id\`) REFERENCES \`categories\` (\`id\`) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='分类已读状态表';
+    `;
+    await connection.execute(sql);
+    console.log('✓ category_read_states 表创建成功');
   }
 
   async createUserSessionsTable(connection) {

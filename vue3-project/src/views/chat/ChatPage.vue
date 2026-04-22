@@ -6,7 +6,12 @@
       </button>
 
       <div class="chat-user-info">
-        <img :src="chatUser.avatar || defaultAvatar" class="chat-avatar" @error="handleAvatarError" />
+        <img
+          :src="chatUser.avatar || defaultAvatar"
+          class="chat-avatar chat-avatar--clickable"
+          @click="goToChatUserProfile"
+          @error="handleAvatarError"
+        />
         <span class="chat-nickname">{{ chatUser.nickname || '用户' }}</span>
       </div>
 
@@ -335,6 +340,11 @@ const goBack = () => {
   router.back()
 }
 
+const goToChatUserProfile = () => {
+  if (!chatUser.value.user_id) return
+  router.push(`/user/${chatUser.value.user_id}`)
+}
+
 watch(
   () => messages.value.length,
   async () => {
@@ -436,6 +446,10 @@ onUnmounted(() => {
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
+}
+
+.chat-avatar--clickable {
+  cursor: pointer;
 }
 
 .chat-nickname {

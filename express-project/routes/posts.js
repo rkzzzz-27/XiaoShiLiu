@@ -471,7 +471,7 @@ router.post('/', authenticateToken, async (req, res) => {
     console.log('📝 开始插入笔记到数据库...');
     const [result] = await pool.execute(
       'INSERT INTO posts (user_id, title, content, category_id, status, type) VALUES (?, ?, ?, ?, ?, ?)',
-      [userId, title || '', sanitizedContent, category_id || null, (status !== undefined ? status : 2).toString(), postType]
+      [userId, title || '', sanitizedContent, category_id || null, (status !== undefined ? status : 0).toString(), postType]
     );
 
     const postId = result.insertId;
@@ -585,19 +585,6 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     console.log(`✅ 创建笔记成功 - 用户ID: ${userId}, 笔记ID: ${postId}, 类型: ${postType}`);
-
-    // 如果笔记状态为待审核(status=2)，在audit表中添加审核记录
-    if (status === 2) {
-      try {
-        await pool.execute(
-          'INSERT INTO audit (type, target_id, status) VALUES (?, ?, ?)',
-          [3, postId, 0]
-        );
-        console.log(`✅ 审核记录创建成功 - 笔记ID: ${postId}`);
-      } catch (error) {
-        console.error('❌ 创建审核记录失败:', error);
-      }
-    }
 
     res.json({
       code: RESPONSE_CODES.SUCCESS,

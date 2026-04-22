@@ -26,13 +26,13 @@
 import { ref, computed, onMounted } from 'vue'
 
 const colorInput = ref(null)
-const currentColor = ref('#ff2e4d') // 默认主题色
+const currentColor = ref('#FFD700') // 默认主题色
 
 // 从CSS变量获取当前主题色
 const getCurrentThemeColor = () => {
   const rootStyles = getComputedStyle(document.documentElement)
   const primaryColor = rootStyles.getPropertyValue('--primary-color').trim()
-  return primaryColor || '#ff2e4d'
+  return primaryColor || '#FFD700'
 }
 
 // 打开颜色选择器

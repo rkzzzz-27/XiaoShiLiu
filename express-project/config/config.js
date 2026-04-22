@@ -1,5 +1,5 @@
 /**
- * 小石榴校园图文社区 - 应用配置文件
+ * 碎锦校园图文社区 - 应用配置文件
  * 集中管理所有配置项
  * 
  * @author ZTMYO
@@ -29,7 +29,7 @@ const config = {
   // JWT配置
   jwt: {
     secret: process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex'),
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+    expiresIn: process.env.JWT_EXPIRES_IN || '30d',
     refreshExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '30d'
   },
 
@@ -131,7 +131,7 @@ const config = {
     // 发件人配置
     from: {
       email: process.env.EMAIL_FROM || '',
-      name: process.env.EMAIL_FROM_NAME || '小石榴校园图文社区'
+      name: process.env.EMAIL_FROM_NAME || '碎锦校园图文社区'
     }
   },
 

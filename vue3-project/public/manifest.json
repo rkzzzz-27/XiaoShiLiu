@@ -30,7 +30,7 @@
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#ff6b6b",
+  "theme_color": "#FFD700",
   "background_color": "#ffffff",
   "description": "碎锦"
 }

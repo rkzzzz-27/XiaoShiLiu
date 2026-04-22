@@ -230,7 +230,23 @@ CREATE TABLE IF NOT EXISTS `messages` (
   CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='私信消息表';
 
--- 15. 用户会话表
+-- 15. 分类已读状态表
+CREATE TABLE IF NOT EXISTS `category_read_states` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `category_id` int(11) NOT NULL COMMENT '分类ID',
+  `last_read_at` timestamp NULL DEFAULT NULL COMMENT '最后已读时间',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_user_category` (`user_id`, `category_id`),
+  KEY `idx_category_id` (`category_id`),
+  KEY `idx_last_read_at` (`last_read_at`),
+  CONSTRAINT `fk_category_read_states_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_category_read_states_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='分类已读状态表';
+
+-- 16. 用户会话表
 CREATE TABLE IF NOT EXISTS `user_sessions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '会话ID',
   `user_id` bigint(20) NOT NULL COMMENT '用户ID',
@@ -249,7 +265,7 @@ CREATE TABLE IF NOT EXISTS `user_sessions` (
   CONSTRAINT `user_sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户会话表';
 
--- 16. 管理员会话表
+-- 17. 管理员会话表
 CREATE TABLE IF NOT EXISTS `admin_sessions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '会话ID',
   `admin_id` bigint(20) NOT NULL COMMENT '管理员ID',

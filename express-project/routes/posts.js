@@ -143,7 +143,7 @@ router.get('/', optionalAuth, async (req, res) => {
       const [totalCountResult] = await pool.execute(countQuery, countParams);
       const totalPosts = totalCountResult[0].total;
       const recommendLimit = Math.ceil(totalPosts * 0.2);
-      // 推荐算法：70%热度+30%新鲜度评分，新发布24小时内的笔记获得新鲜度加分，筛选前20%按分数排序
+      // 推荐算法：70%热度(收藏+点赞+浏览量*0.7)+30%新鲜度评分，新发布24小时内的笔记获得新鲜度加分，筛选前20%按分数排序
       let innerWhere = 'p.status = ?';
       let innerParams = [status.toString()];
       if (type) {
@@ -163,7 +163,7 @@ router.get('/', optionalAuth, async (req, res) => {
         FROM (
           SELECT 
             p.*,
-            (p.view_count * 0.7 + (24 - LEAST(TIMESTAMPDIFF(HOUR, p.created_at, NOW()), 24)) * 0.3) as score
+            ((p.like_count + p.collect_count + p.view_count * 0.7) * 0.7 + (24 - LEAST(TIMESTAMPDIFF(HOUR, p.created_at, NOW()), 24)) * 0.3) as score
           FROM posts p 
           WHERE ${innerWhere}
           ORDER BY score DESC
